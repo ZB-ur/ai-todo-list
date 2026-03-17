@@ -1,0 +1,64 @@
+{
+  "components": [
+    {
+      "name": "Display",
+      "file": "components/Display.tsx",
+      "covers_flow": "basic-calculation"
+    },
+    {
+      "name": "DigitButton",
+      "file": "components/DigitButton.tsx",
+      "covers_flow": "basic-calculation"
+    },
+    {
+      "name": "OperatorButton",
+      "file": "components/OperatorButton.tsx",
+      "covers_flow": "basic-calculation"
+    },
+    {
+      "name": "EqualsButton",
+      "file": "components/EqualsButton.tsx",
+      "covers_flow": "basic-calculation"
+    },
+    {
+      "name": "ClearButton",
+      "file": "components/ClearButton.tsx",
+      "covers_flow": "clear-and-backspace"
+    },
+    {
+      "name": "BackspaceButton",
+      "file": "components/BackspaceButton.tsx",
+      "covers_flow": "clear-and-backspace"
+    },
+    {
+      "name": "ButtonGrid",
+      "file": "components/ButtonGrid.tsx",
+      "covers_flow": "basic-calculation"
+    },
+    {
+      "name": "Calculator",
+      "file": "components/Calculator.tsx",
+      "covers_flow": "basic-calculation"
+    }
+  ],
+  "screenshots": [
+    "screenshots/Display.png",
+    "screenshots/DigitButton.png",
+    "screenshots/OperatorButton.png",
+    "screenshots/EqualsButton.png",
+    "screenshots/ClearButton.png",
+    "screenshots/BackspaceButton.png",
+    "screenshots/ButtonGrid.png",
+    "screenshots/Calculator.png"
+  ],
+  "previews": [
+    "previews/Display.html",
+    "previews/DigitButton.html",
+    "previews/OperatorButton.html",
+    "previews/EqualsButton.html",
+    "previews/ClearButton.html",
+    "previews/BackspaceButton.html",
+    "previews/ButtonGrid.html",
+    "previews/Calculator.html"
+  ]
+}
