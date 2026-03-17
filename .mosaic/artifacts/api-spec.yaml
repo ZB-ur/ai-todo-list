@@ -1,0 +1,22 @@
+# No API specification required.
+#
+# Per the PRD constraints:
+#   - "纯前端实现，使用 React + Tailwind CSS，无后端依赖"
+# Per the PRD out-of-scope:
+#   - "后端 API 或数据持久化"
+#
+# This calculator is a purely client-side application.
+# All computation happens in the browser via JavaScript.
+# No REST endpoints, no server communication, no data persistence.
+
+openapi: "3.0.3"
+info:
+  title: Simple Calculator (No Backend)
+  version: "1.0.0"
+  description: >
+    This project is a pure frontend calculator with no backend API.
+    All operations (digit input, arithmetic, display) are handled
+    entirely in-browser. This spec is intentionally empty.
+paths: {}
+components:
+  schemas: {}

@@ -1,0 +1,5 @@
+{
+  "endpoints": [],
+  "models": [],
+  "note": "Pure frontend application — no API endpoints required. All calculator logic runs client-side per PRD constraints."
+}
