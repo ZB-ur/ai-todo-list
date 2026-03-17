@@ -1,0 +1,30 @@
+{
+  "flows": [
+    "basic-calculation",
+    "continuous-calculation",
+    "clear-and-backspace",
+    "error-recovery",
+    "overflow-display"
+  ],
+  "components": [
+    "Display",
+    "DigitButton",
+    "OperatorButton",
+    "EqualsButton",
+    "ClearButton",
+    "BackspaceButton",
+    "ButtonGrid",
+    "Calculator"
+  ],
+  "interaction_rules": [
+    "输入即显：按键立即更新显示屏",
+    "重复小数点忽略：已有小数点时再次点击无效",
+    "运算符替换：连续点击运算符以最后一次为准",
+    "等号后输入数字：开始新计算",
+    "等号后点运算符：进入连续运算",
+    "前导零处理：非零数字替换前导零",
+    "字体自适应：超8位逐步缩小",
+    "触摸区域最小44×44px",
+    "按钮点击视觉反馈"
+  ]
+}
