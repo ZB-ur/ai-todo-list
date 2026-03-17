@@ -1,0 +1,5 @@
+{
+  "endpoints": [],
+  "models": [],
+  "note": "Pure frontend application — no backend API required. All features (F1–F7) are implemented client-side with React state management."
+}
