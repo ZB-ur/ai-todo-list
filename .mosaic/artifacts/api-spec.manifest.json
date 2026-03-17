@@ -1,0 +1,158 @@
+{
+  "endpoints": [
+    {
+      "method": "POST",
+      "path": "/auth/register",
+      "covers_feature": "user-auth"
+    },
+    {
+      "method": "POST",
+      "path": "/auth/login",
+      "covers_feature": "user-auth"
+    },
+    {
+      "method": "POST",
+      "path": "/auth/oauth/google",
+      "covers_feature": "user-auth"
+    },
+    {
+      "method": "POST",
+      "path": "/auth/refresh",
+      "covers_feature": "user-auth"
+    },
+    {
+      "method": "POST",
+      "path": "/auth/logout",
+      "covers_feature": "user-auth"
+    },
+    {
+      "method": "GET",
+      "path": "/tasks",
+      "covers_feature": "task-crud"
+    },
+    {
+      "method": "POST",
+      "path": "/tasks",
+      "covers_feature": "task-crud"
+    },
+    {
+      "method": "GET",
+      "path": "/tasks/{id}",
+      "covers_feature": "task-crud"
+    },
+    {
+      "method": "PUT",
+      "path": "/tasks/{id}",
+      "covers_feature": "task-crud"
+    },
+    {
+      "method": "DELETE",
+      "path": "/tasks/{id}",
+      "covers_feature": "task-crud"
+    },
+    {
+      "method": "PATCH",
+      "path": "/tasks/{id}/complete",
+      "covers_feature": "task-crud"
+    },
+    {
+      "method": "PATCH",
+      "path": "/tasks/{id}/uncomplete",
+      "covers_feature": "task-crud"
+    },
+    {
+      "method": "GET",
+      "path": "/tasks/{id}/subtasks",
+      "covers_feature": "ai-breakdown"
+    },
+    {
+      "method": "POST",
+      "path": "/tasks/batch",
+      "covers_feature": "task-crud"
+    },
+    {
+      "method": "GET",
+      "path": "/lists",
+      "covers_feature": "smart-lists-tags"
+    },
+    {
+      "method": "POST",
+      "path": "/lists",
+      "covers_feature": "smart-lists-tags"
+    },
+    {
+      "method": "PUT",
+      "path": "/lists/{id}",
+      "covers_feature": "smart-lists-tags"
+    },
+    {
+      "method": "DELETE",
+      "path": "/lists/{id}",
+      "covers_feature": "smart-lists-tags"
+    },
+    {
+      "method": "GET",
+      "path": "/tags",
+      "covers_feature": "smart-lists-tags"
+    },
+    {
+      "method": "POST",
+      "path": "/tags",
+      "covers_feature": "smart-lists-tags"
+    },
+    {
+      "method": "PUT",
+      "path": "/tags/{id}",
+      "covers_feature": "smart-lists-tags"
+    },
+    {
+      "method": "DELETE",
+      "path": "/tags/{id}",
+      "covers_feature": "smart-lists-tags"
+    },
+    {
+      "method": "POST",
+      "path": "/ai/parse",
+      "covers_feature": "nl-input"
+    },
+    {
+      "method": "POST",
+      "path": "/tasks/{id}/breakdown",
+      "covers_feature": "ai-breakdown"
+    },
+    {
+      "method": "POST",
+      "path": "/tasks/{id}/breakdown/confirm",
+      "covers_feature": "ai-breakdown"
+    },
+    {
+      "method": "POST",
+      "path": "/sync",
+      "covers_feature": "offline-sync"
+    },
+    {
+      "method": "GET",
+      "path": "/export/csv",
+      "covers_feature": "data-import-export"
+    },
+    {
+      "method": "POST",
+      "path": "/import/csv",
+      "covers_feature": "data-import-export"
+    },
+    {
+      "method": "POST",
+      "path": "/import/csv/{preview_id}/confirm",
+      "covers_feature": "data-import-export"
+    }
+  ],
+  "models": [
+    "User",
+    "Task",
+    "TaskList",
+    "Tag",
+    "NLParseResult",
+    "SyncChange",
+    "SyncConflict"
+  ]
+}

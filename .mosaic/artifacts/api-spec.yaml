@@ -1,0 +1,1020 @@
+openapi: 3.0.3
+info:
+  title: 待办事项应用 API
+  description: 轻量级 AI 智能待办事项应用 RESTful API
+  version: 1.0.0
+
+servers:
+  - url: /api/v1
+    description: API v1
+
+tags:
+  - name: Auth
+    description: 用户认证（注册/登录/OAuth）
+  - name: Tasks
+    description: 任务 CRUD 及状态管理
+  - name: Lists
+    description: 自定义列表管理
+  - name: Tags
+    description: 标签管理
+  - name: AI
+    description: AI 智能功能（自然语言解析、任务拆解）
+  - name: Sync
+    description: 离线同步
+  - name: Data
+    description: 数据导入导出
+
+security:
+  - BearerAuth: []
+
+paths:
+  # ── Auth ──────────────────────────────────────────
+  /auth/register:
+    post:
+      tags: [Auth]
+      summary: 邮箱注册
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [email, password]
+              properties:
+                email:
+                  type: string
+                  format: email
+                password:
+                  type: string
+                  minLength: 8
+      responses:
+        '201':
+          description: 注册成功
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthResponse'
+        '409':
+          $ref: '#/components/responses/Conflict'
+        '422':
+          $ref: '#/components/responses/ValidationError'
+
+  /auth/login:
+    post:
+      tags: [Auth]
+      summary: 邮箱登录
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [email, password]
+              properties:
+                email:
+                  type: string
+                  format: email
+                password:
+                  type: string
+      responses:
+        '200':
+          description: 登录成功
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+  /auth/oauth/google:
+    post:
+      tags: [Auth]
+      summary: Google OAuth 登录
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [id_token]
+              properties:
+                id_token:
+                  type: string
+                  description: Google OAuth ID token
+      responses:
+        '200':
+          description: 登录成功
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+  /auth/refresh:
+    post:
+      tags: [Auth]
+      summary: 刷新访问令牌
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [refresh_token]
+              properties:
+                refresh_token:
+                  type: string
+      responses:
+        '200':
+          description: 刷新成功
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+  /auth/logout:
+    post:
+      tags: [Auth]
+      summary: 登出（吊销 refresh token）
+      responses:
+        '204':
+          description: 登出成功
+
+  # ── Tasks ─────────────────────────────────────────
+  /tasks:
+    get:
+      tags: [Tasks]
+      summary: 获取任务列表（支持筛选与智能列表）
+      parameters:
+        - name: list_id
+          in: query
+          schema:
+            type: string
+            format: uuid
+          description: 按自定义列表筛选
+        - name: tag_id
+          in: query
+          schema:
+            type: string
+            format: uuid
+          description: 按标签筛选
+        - name: smart_list
+          in: query
+          schema:
+            type: string
+            enum: [today, upcoming, completed]
+          description: 智能列表（今日/即将到期/已完成）
+        - name: status
+          in: query
+          schema:
+            type: string
+            enum: [active, completed]
+          description: 任务状态筛选
+        - name: cursor
+          in: query
+          schema:
+            type: string
+          description: 分页游标
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            default: 50
+            maximum: 100
+      responses:
+        '200':
+          description: 任务列表
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Task'
+                  next_cursor:
+                    type: string
+                    nullable: true
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+    post:
+      tags: [Tasks]
+      summary: 创建任务
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TaskCreate'
+      responses:
+        '201':
+          description: 创建成功
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Task'
+        '422':
+          $ref: '#/components/responses/ValidationError'
+
+  /tasks/{id}:
+    parameters:
+      - $ref: '#/components/parameters/TaskId'
+
+    get:
+      tags: [Tasks]
+      summary: 获取任务详情
+      responses:
+        '200':
+          description: 任务详情
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Task'
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+    put:
+      tags: [Tasks]
+      summary: 更新任务
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TaskUpdate'
+      responses:
+        '200':
+          description: 更新成功
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Task'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '422':
+          $ref: '#/components/responses/ValidationError'
+
+    delete:
+      tags: [Tasks]
+      summary: 删除任务
+      responses:
+        '204':
+          description: 删除成功
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+  /tasks/{id}/complete:
+    parameters:
+      - $ref: '#/components/parameters/TaskId'
+    patch:
+      tags: [Tasks]
+      summary: 标记任务完成
+      responses:
+        '200':
+          description: 操作成功
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Task'
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+  /tasks/{id}/uncomplete:
+    parameters:
+      - $ref: '#/components/parameters/TaskId'
+    patch:
+      tags: [Tasks]
+      summary: 撤销完成（恢复为活跃）
+      responses:
+        '200':
+          description: 操作成功
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Task'
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+  /tasks/{id}/subtasks:
+    parameters:
+      - $ref: '#/components/parameters/TaskId'
+    get:
+      tags: [Tasks]
+      summary: 获取子任务列表
+      responses:
+        '200':
+          description: 子任务列表
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Task'
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+  /tasks/batch:
+    post:
+      tags: [Tasks]
+      summary: 批量操作任务（完成/删除）
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [task_ids, action]
+              properties:
+                task_ids:
+                  type: array
+                  items:
+                    type: string
+                    format: uuid
+                  maxItems: 50
+                action:
+                  type: string
+                  enum: [complete, delete]
+      responses:
+        '200':
+          description: 批量操作成功
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  affected:
+                    type: integer
+
+  # ── Lists ─────────────────────────────────────────
+  /lists:
+    get:
+      tags: [Lists]
+      summary: 获取自定义列表
+      responses:
+        '200':
+          description: 列表
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/TaskList'
+
+    post:
+      tags: [Lists]
+      summary: 创建列表
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [name]
+              properties:
+                name:
+                  type: string
+                  maxLength: 50
+      responses:
+        '201':
+          description: 创建成功
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TaskList'
+
+  /lists/{id}:
+    parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+
+    put:
+      tags: [Lists]
+      summary: 重命名列表
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [name]
+              properties:
+                name:
+                  type: string
+                  maxLength: 50
+      responses:
+        '200':
+          description: 更新成功
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TaskList'
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+    delete:
+      tags: [Lists]
+      summary: 删除列表（任务移入默认收件箱）
+      responses:
+        '204':
+          description: 删除成功
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+  # ── Tags ──────────────────────────────────────────
+  /tags:
+    get:
+      tags: [Tags]
+      summary: 获取所有标签
+      responses:
+        '200':
+          description: 标签列表
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Tag'
+
+    post:
+      tags: [Tags]
+      summary: 创建标签
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [name]
+              properties:
+                name:
+                  type: string
+                  maxLength: 30
+                color:
+                  type: string
+                  pattern: '^#[0-9a-fA-F]{6}$'
+                  default: '#6B7280'
+      responses:
+        '201':
+          description: 创建成功
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Tag'
+
+  /tags/{id}:
+    parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+
+    put:
+      tags: [Tags]
+      summary: 更新标签
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  maxLength: 30
+                color:
+                  type: string
+                  pattern: '^#[0-9a-fA-F]{6}$'
+      responses:
+        '200':
+          description: 更新成功
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Tag'
+
+    delete:
+      tags: [Tags]
+      summary: 删除标签
+      responses:
+        '204':
+          description: 删除成功
+
+  # ── AI ────────────────────────────────────────────
+  /ai/parse:
+    post:
+      tags: [AI]
+      summary: 自然语言解析为任务字段
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [text]
+              properties:
+                text:
+                  type: string
+                  maxLength: 500
+                  description: 用户自然语言输入（如「明天下午3点开会」）
+      responses:
+        '200':
+          description: 解析结果
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NLParseResult'
+        '503':
+          $ref: '#/components/responses/AIUnavailable'
+
+  /tasks/{id}/breakdown:
+    parameters:
+      - $ref: '#/components/parameters/TaskId'
+    post:
+      tags: [AI]
+      summary: AI 任务拆解（生成子任务建议）
+      responses:
+        '200':
+          description: 子任务建议列表
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  suggestions:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        title:
+                          type: string
+                        description:
+                          type: string
+                        priority:
+                          $ref: '#/components/schemas/Priority'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '503':
+          $ref: '#/components/responses/AIUnavailable'
+
+  /tasks/{id}/breakdown/confirm:
+    parameters:
+      - $ref: '#/components/parameters/TaskId'
+    post:
+      tags: [AI]
+      summary: 确认添加 AI 拆解的子任务
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [subtasks]
+              properties:
+                subtasks:
+                  type: array
+                  items:
+                    type: object
+                    required: [title]
+                    properties:
+                      title:
+                        type: string
+                      description:
+                        type: string
+                      priority:
+                        $ref: '#/components/schemas/Priority'
+      responses:
+        '201':
+          description: 子任务创建成功
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Task'
+
+  # ── Sync ──────────────────────────────────────────
+  /sync:
+    post:
+      tags: [Sync]
+      summary: 离线变更批量同步
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [last_synced_at, changes]
+              properties:
+                last_synced_at:
+                  type: string
+                  format: date-time
+                  description: 客户端上次同步时间
+                changes:
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/SyncChange'
+      responses:
+        '200':
+          description: 同步结果
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  server_changes:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/SyncChange'
+                    description: 服务端自上次同步以来的变更
+                  conflicts:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/SyncConflict'
+                  synced_at:
+                    type: string
+                    format: date-time
+
+  # ── Data Import/Export ────────────────────────────
+  /export/csv:
+    get:
+      tags: [Data]
+      summary: 导出任务为 CSV
+      responses:
+        '200':
+          description: CSV 文件
+          content:
+            text/csv:
+              schema:
+                type: string
+                format: binary
+          headers:
+            Content-Disposition:
+              schema:
+                type: string
+                example: attachment; filename="tasks_2024-01-01.csv"
+
+  /import/csv:
+    post:
+      tags: [Data]
+      summary: 从 CSV 导入任务
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              required: [file]
+              properties:
+                file:
+                  type: string
+                  format: binary
+      responses:
+        '200':
+          description: 导入预览
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  preview_id:
+                    type: string
+                    format: uuid
+                  task_count:
+                    type: integer
+                  sample:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/TaskCreate'
+                    maxItems: 5
+
+  /import/csv/{preview_id}/confirm:
+    parameters:
+      - name: preview_id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+    post:
+      tags: [Data]
+      summary: 确认 CSV 导入
+      responses:
+        '201':
+          description: 导入成功
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  imported:
+                    type: integer
+
+components:
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+  parameters:
+    TaskId:
+      name: id
+      in: path
+      required: true
+      schema:
+        type: string
+        format: uuid
+
+  schemas:
+    Priority:
+      type: string
+      enum: [high, medium, low]
+
+    AuthResponse:
+      type: object
+      properties:
+        access_token:
+          type: string
+        refresh_token:
+          type: string
+        expires_in:
+          type: integer
+          description: 过期时间（秒）
+        user:
+          $ref: '#/components/schemas/User'
+
+    User:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        email:
+          type: string
+          format: email
+        created_at:
+          type: string
+          format: date-time
+
+    Task:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        title:
+          type: string
+        description:
+          type: string
+          nullable: true
+        priority:
+          $ref: '#/components/schemas/Priority'
+        due_date:
+          type: string
+          format: date-time
+          nullable: true
+        status:
+          type: string
+          enum: [active, completed]
+        list_id:
+          type: string
+          format: uuid
+          nullable: true
+        parent_id:
+          type: string
+          format: uuid
+          nullable: true
+          description: 父任务 ID（子任务关联）
+        tags:
+          type: array
+          items:
+            $ref: '#/components/schemas/Tag'
+        completed_at:
+          type: string
+          format: date-time
+          nullable: true
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+
+    TaskCreate:
+      type: object
+      required: [title]
+      properties:
+        title:
+          type: string
+          maxLength: 200
+        description:
+          type: string
+          nullable: true
+        priority:
+          $ref: '#/components/schemas/Priority'
+          default: medium
+        due_date:
+          type: string
+          format: date-time
+          nullable: true
+        list_id:
+          type: string
+          format: uuid
+          nullable: true
+        parent_id:
+          type: string
+          format: uuid
+          nullable: true
+        tag_ids:
+          type: array
+          items:
+            type: string
+            format: uuid
+
+    TaskUpdate:
+      type: object
+      properties:
+        title:
+          type: string
+          maxLength: 200
+        description:
+          type: string
+          nullable: true
+        priority:
+          $ref: '#/components/schemas/Priority'
+        due_date:
+          type: string
+          format: date-time
+          nullable: true
+        list_id:
+          type: string
+          format: uuid
+          nullable: true
+        tag_ids:
+          type: array
+          items:
+            type: string
+            format: uuid
+
+    TaskList:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        name:
+          type: string
+        task_count:
+          type: integer
+        created_at:
+          type: string
+          format: date-time
+
+    Tag:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        name:
+          type: string
+        color:
+          type: string
+          description: HEX 颜色值
+
+    NLParseResult:
+      type: object
+      properties:
+        title:
+          type: string
+          description: 解析出的任务标题
+        due_date:
+          type: string
+          format: date-time
+          nullable: true
+        priority:
+          $ref: '#/components/schemas/Priority'
+          nullable: true
+        confidence:
+          type: number
+          format: float
+          minimum: 0
+          maximum: 1
+          description: 解析置信度
+
+    SyncChange:
+      type: object
+      required: [entity_type, entity_id, action, timestamp]
+      properties:
+        entity_type:
+          type: string
+          enum: [task, list, tag]
+        entity_id:
+          type: string
+          format: uuid
+        action:
+          type: string
+          enum: [create, update, delete]
+        data:
+          type: object
+          description: 实体数据（create/update 时提供）
+        timestamp:
+          type: string
+          format: date-time
+
+    SyncConflict:
+      type: object
+      properties:
+        entity_type:
+          type: string
+        entity_id:
+          type: string
+          format: uuid
+        resolution:
+          type: string
+          enum: [server_wins, client_wins]
+        resolved_data:
+          type: object
+
+    ApiError:
+      type: object
+      properties:
+        error:
+          type: object
+          properties:
+            code:
+              type: string
+            message:
+              type: string
+            details:
+              type: array
+              items:
+                type: object
+                properties:
+                  field:
+                    type: string
+                  message:
+                    type: string
+
+  responses:
+    Unauthorized:
+      description: 未认证或 token 过期
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ApiError'
+
+    NotFound:
+      description: 资源不存在
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ApiError'
+
+    Conflict:
+      description: 资源冲突（如邮箱已注册）
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ApiError'
+
+    ValidationError:
+      description: 请求参数校验失败
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ApiError'
+
+    AIUnavailable:
+      description: AI 服务暂不可用（客户端应降级为手动操作）
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ApiError'
