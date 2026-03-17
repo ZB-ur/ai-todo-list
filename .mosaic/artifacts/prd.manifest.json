@@ -1,0 +1,28 @@
+{
+  "features": [
+    "display",
+    "digit-input",
+    "decimal-point",
+    "basic-operations",
+    "equals",
+    "chained-operations",
+    "clear",
+    "divide-by-zero"
+  ],
+  "constraints": [
+    "pure-frontend-react-tailwind",
+    "standard-grid-layout-4-columns",
+    "javascript-float-arithmetic",
+    "max-12-digit-display",
+    "playwright-screenshot-validation"
+  ],
+  "out_of_scope": [
+    "scientific-calculations",
+    "history",
+    "keyboard-shortcuts",
+    "parentheses-expression-editing",
+    "unit-conversion",
+    "theme-switching",
+    "backend-api"
+  ]
+}
