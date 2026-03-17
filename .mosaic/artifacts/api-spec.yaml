@@ -1,0 +1,38 @@
+openapi: 3.0.3
+info:
+  title: Calculator App API
+  description: |
+    This is a pure frontend calculator application. All arithmetic operations
+    are performed client-side via a safe expression parser (no eval).
+    No backend API endpoints are required.
+  version: 1.0.0
+
+paths: {}
+
+components:
+  schemas:
+    CalculatorState:
+      type: object
+      description: Client-side state model (not transmitted over network)
+      properties:
+        expression:
+          type: string
+          description: Current expression string displayed in the expression line
+          example: "12 + 8 ="
+        currentInput:
+          type: string
+          description: Current number being entered
+          example: "8"
+        result:
+          type: number
+          description: Computed result of the expression
+          example: 20
+        error:
+          type: string
+          nullable: true
+          description: Error message if in error state, null otherwise
+          example: "不能除以零"
+      required:
+        - expression
+        - currentInput
+        - result

@@ -1,0 +1,7 @@
+{
+  "endpoints": [],
+  "models": [
+    "CalculatorState"
+  ],
+  "notes": "Pure frontend app — no API endpoints required. All computation is client-side via ExpressionParser. CalculatorState is a client-only model documented for reference."
+}
