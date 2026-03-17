@@ -1,26 +1,22 @@
 {
   "competitors": [
-    "Todoist",
-    "Microsoft To Do",
-    "TickTick",
-    "Apple Reminders",
-    "Google Tasks",
-    "Any.do"
+    "Google Calculator",
+    "Apple/Windows System Calculator",
+    "Desmos",
+    "Calculator.net",
+    "Calcbot"
   ],
   "key_insights": [
-    "极简零配置体验是差异化核心——3秒录入，无学习成本",
-    "自然语言快捷录入和全局快速添加是高价值功能",
-    "Web + Mobile 跨平台同步是用户底线需求",
-    "共享清单和轻量协作可驱动自然增长",
-    "支持竞品数据导入可降低用户迁移门槛",
-    "AI 辅助（智能分类、优先级建议）是趋势方向"
+    "Pure frontend implementation with React + Tailwind CSS, no backend needed",
+    "Avoid eval() for expression parsing — use safe parser (reverse Polish notation or recursive descent)",
+    "MVP scope: basic arithmetic, clear/backspace, responsive layout",
+    "Differentiation through clean UI design and calculation history",
+    "Extension path: scientific mode, theme switching, history"
   ],
   "feasibility": "high",
   "risks": [
-    "市场高度饱和，获客成本高",
-    "用户迁移成本低导致留存困难",
-    "Freemium 模式付费转化率普遍偏低（2-5%）",
-    "Apple/Google/Microsoft 系统级集成优势难以对抗",
-    "功能同质化严重，需持续差异化投入"
+    "Market saturation — hard to differentiate as standalone product",
+    "Expression parsing edge cases (division by zero, overflow, floating point precision)",
+    "Scope creep if scientific/advanced features added without planning"
   ]
 }
