@@ -1,0 +1,27 @@
+{
+  "features": [
+    "basic-arithmetic",
+    "decimal-support",
+    "clear-and-backspace",
+    "display",
+    "keyboard-support",
+    "button-layout",
+    "error-handling"
+  ],
+  "constraints": [
+    "react-tailwind-frontend-only",
+    "no-eval-expression-parsing",
+    "modern-browser-support",
+    "mobile-responsive-44px-min-touch",
+    "sub-1s-first-load"
+  ],
+  "out_of_scope": [
+    "scientific-calculation",
+    "calculation-history",
+    "theme-switching",
+    "parentheses-nesting",
+    "unit-conversion",
+    "local-storage",
+    "i18n"
+  ]
+}
