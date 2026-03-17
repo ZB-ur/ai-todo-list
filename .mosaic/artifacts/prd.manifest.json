@@ -1,0 +1,27 @@
+{
+  "features": [
+    "F1-numeric-input",
+    "F2-four-operations",
+    "F3-chained-calculation",
+    "F4-clear-and-backspace",
+    "F5-error-handling",
+    "F6-display",
+    "F7-responsive-layout"
+  ],
+  "constraints": [
+    "frontend-only-no-backend",
+    "react-tailwind-stack",
+    "no-eval-use-state-machine",
+    "single-step-two-operand",
+    "max-10-significant-digits"
+  ],
+  "out_of_scope": [
+    "parentheses-compound-expressions",
+    "scientific-functions",
+    "keyboard-shortcuts",
+    "calculation-history",
+    "theme-switching",
+    "unit-conversion",
+    "offline-pwa"
+  ]
+}
