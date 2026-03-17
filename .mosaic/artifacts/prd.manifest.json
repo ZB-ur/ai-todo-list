@@ -1,0 +1,29 @@
+{
+  "features": [
+    "F1:task-crud",
+    "F2:smart-lists-and-tags",
+    "F3:natural-language-input",
+    "F4:ai-task-breakdown",
+    "F5:offline-first-sync",
+    "F6:user-auth",
+    "F7:responsive-pwa-ui",
+    "F8:data-import-export"
+  ],
+  "constraints": [
+    "C1:react-tailwind-postgres",
+    "C2:mobile-first",
+    "C3:offline-indexeddb",
+    "C4:api-p95-200ms",
+    "C5:ai-graceful-degradation",
+    "C6:single-user-only"
+  ],
+  "out_of_scope": [
+    "OS1:team-collaboration",
+    "OS2:calendar-kanban-views",
+    "OS3:recurring-tasks",
+    "OS4:third-party-integrations",
+    "OS5:native-mobile-apps",
+    "OS6:i18n",
+    "OS7:paid-tiers"
+  ]
+}
