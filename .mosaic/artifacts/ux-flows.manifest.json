@@ -1,0 +1,36 @@
+{
+  "flows": [
+    "basic-arithmetic-calculation",
+    "continuous-calculation",
+    "decimal-input",
+    "clear-and-backspace",
+    "error-handling-division-by-zero",
+    "error-recovery",
+    "keyboard-input"
+  ],
+  "components": [
+    "Calculator",
+    "Display",
+    "ButtonGrid",
+    "CalcButton",
+    "ExpressionParser"
+  ],
+  "interaction_rules": [
+    "button-press-visual-feedback",
+    "keyboard-highlight-feedback",
+    "expression-display-small-gray",
+    "result-display-large-primary",
+    "auto-shrink-long-numbers",
+    "float-precision-10-digits",
+    "consecutive-operator-replace",
+    "equals-then-digit-starts-new",
+    "equals-then-operator-continues",
+    "error-in-red",
+    "error-disables-operators",
+    "any-input-clears-error",
+    "4-column-grid-layout",
+    "responsive-desktop-320px-centered",
+    "responsive-mobile-full-width-64px-buttons",
+    "min-touch-target-48px"
+  ]
+}
