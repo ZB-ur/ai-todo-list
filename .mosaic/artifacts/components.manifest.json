@@ -1,0 +1,36 @@
+{
+  "components": [
+    {
+      "name": "Display",
+      "file": "components/Display.tsx",
+      "covers_flow": "basic-calc"
+    },
+    {
+      "name": "CalcButton",
+      "file": "components/CalcButton.tsx",
+      "covers_flow": "basic-calc"
+    },
+    {
+      "name": "Keypad",
+      "file": "components/Keypad.tsx",
+      "covers_flow": "basic-calc"
+    },
+    {
+      "name": "Calculator",
+      "file": "components/Calculator.tsx",
+      "covers_flow": "basic-calc"
+    }
+  ],
+  "screenshots": [
+    "screenshots/Display.png",
+    "screenshots/CalcButton.png",
+    "screenshots/Keypad.png",
+    "screenshots/Calculator.png"
+  ],
+  "previews": [
+    "previews/Display.html",
+    "previews/CalcButton.html",
+    "previews/Keypad.html",
+    "previews/Calculator.html"
+  ]
+}
