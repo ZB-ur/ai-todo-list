@@ -1,0 +1,28 @@
+{
+  "flows": [
+    "basic-calc",
+    "digit-decimal",
+    "chained-ops",
+    "clear-reset",
+    "divide-by-zero",
+    "overflow-display"
+  ],
+  "components": [
+    "Display",
+    "DigitButton",
+    "DecimalButton",
+    "OperatorButton",
+    "EqualsButton",
+    "ClearButton"
+  ],
+  "interaction_rules": [
+    "输入即时反馈",
+    "运算符高亮",
+    "重复等号不重复计算",
+    "运算符切换以最后一次为准",
+    "结果续算",
+    "结果覆盖",
+    "Error锁定仅AC响应",
+    "前导零抑制"
+  ]
+}
