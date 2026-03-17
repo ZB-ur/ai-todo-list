@@ -1,27 +1,25 @@
 {
   "features": [
     "basic-arithmetic",
-    "display",
-    "clear-backspace",
-    "keyboard-layout",
-    "safe-expression-parser",
+    "expression-display",
+    "clear-and-backspace",
+    "keyboard-support",
     "error-handling",
     "responsive-layout"
   ],
   "constraints": [
-    "frontend-only-no-backend",
     "react-tailwind-stack",
-    "no-eval-no-new-function",
-    "js-safe-integer-range",
-    "float-precision-10-digits"
+    "frontend-only",
+    "no-eval",
+    "operator-precedence",
+    "float-precision-display"
   ],
   "out_of_scope": [
     "scientific-calculation",
-    "calculation-history",
-    "theme-switching",
-    "parentheses-support",
+    "history",
+    "parentheses",
     "unit-conversion",
-    "keyboard-shortcuts",
+    "theme-switching",
     "data-persistence",
     "i18n"
   ]
