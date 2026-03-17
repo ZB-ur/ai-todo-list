@@ -1,0 +1,28 @@
+{
+  "features": [
+    "basic-arithmetic",
+    "display",
+    "clear-backspace",
+    "keyboard-layout",
+    "safe-expression-parser",
+    "error-handling",
+    "responsive-layout"
+  ],
+  "constraints": [
+    "frontend-only-no-backend",
+    "react-tailwind-stack",
+    "no-eval-no-new-function",
+    "js-safe-integer-range",
+    "float-precision-10-digits"
+  ],
+  "out_of_scope": [
+    "scientific-calculation",
+    "calculation-history",
+    "theme-switching",
+    "parentheses-support",
+    "unit-conversion",
+    "keyboard-shortcuts",
+    "data-persistence",
+    "i18n"
+  ]
+}
