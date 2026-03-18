@@ -1,0 +1,29 @@
+{
+  "features": [
+    "basic-arithmetic",
+    "expression-display",
+    "keyboard-input",
+    "button-input",
+    "calculation-history",
+    "decimal-precision",
+    "responsive-layout",
+    "error-handling"
+  ],
+  "constraints": [
+    "frontend-only-no-backend",
+    "react-tailwind-stack",
+    "no-eval-custom-parser",
+    "max-expression-length-50",
+    "scientific-notation-overflow",
+    "sub-1s-load"
+  ],
+  "out_of_scope": [
+    "scientific-functions",
+    "unit-conversion",
+    "programmer-mode",
+    "graphing",
+    "theme-switching",
+    "user-accounts",
+    "parentheses-operator-precedence"
+  ]
+}
