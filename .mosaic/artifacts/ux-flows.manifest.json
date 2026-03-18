@@ -1,0 +1,30 @@
+{
+  "flows": [
+    "basic-calculation",
+    "correction-and-clear",
+    "special-operators",
+    "error-handling-division-by-zero",
+    "keyboard-input",
+    "calculation-history",
+    "responsive-layout"
+  ],
+  "components": [
+    "Calculator",
+    "Display",
+    "ButtonPanel",
+    "CalcButton",
+    "HistoryPanel",
+    "HistoryRecord",
+    "HistoryToggle"
+  ],
+  "interaction_rules": [
+    "button-hover-active-feedback-100ms",
+    "single-decimal-point-per-operand",
+    "operator-chaining-replaces-previous",
+    "leading-zero-prevention",
+    "max-15-digits-per-operand",
+    "float-precision-rounding-10-significant-digits",
+    "keyboard-capture-no-text-input",
+    "history-cap-20-records-fifo"
+  ]
+}
