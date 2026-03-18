@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ButtonGrid Preview</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    body { margin: 0; padding: 16px; background: #f8fafc; font-family: system-ui, sans-serif; }
+  </style>
+</head>
+<body>
+  <div style="max-width: 360px; margin: 0 auto;">
+    <div class="grid grid-cols-4 gap-3">
+
+      <!-- Row 1: AC, ⌫, (empty), ÷ -->
+      <button class="bg-gray-200 border border-gray-200 rounded-xl text-gray-900 text-xl font-medium h-16 flex items-center justify-center select-none cursor-pointer hover:bg-gray-300">AC</button>
+      <button class="bg-gray-200 border border-gray-200 rounded-xl text-gray-900 text-xl font-medium h-16 flex items-center justify-center select-none cursor-pointer hover:bg-gray-300">⌫</button>
+      <div></div>
+      <button class="bg-blue-100 border border-blue-200 rounded-xl text-blue-600 text-2xl font-medium h-16 flex items-center justify-center select-none cursor-pointer hover:bg-blue-200">÷</button>
+
+      <!-- Row 2: 7, 8, 9, × -->
+      <button class="bg-white border border-gray-200 rounded-xl text-gray-900 text-2xl font-medium h-16 flex items-center justify-center select-none cursor-pointer hover:bg-gray-50">7</button>
+      <button class="bg-white border border-gray-200 rounded-xl text-gray-900 text-2xl font-medium h-16 flex items-center justify-center select-none cursor-pointer hover:bg-gray-50">8</button>
+      <button class="bg-white border border-gray-200 rounded-xl text-gray-900 text-2xl font-medium h-16 flex items-center justify-center select-none cursor-pointer hover:bg-gray-50">9</button>
+      <button class="bg-blue-600 text-white border border-blue-600 rounded-xl text-2xl font-medium h-16 flex items-center justify-center select-none cursor-pointer hover:bg-blue-700">×</button>
+
+      <!-- Row 3: 4, 5, 6, − -->
+      <button class="bg-white border border-gray-200 rounded-xl text-gray-900 text-2xl font-medium h-16 flex items-center justify-center select-none cursor-pointer hover:bg-gray-50">4</button>
+      <button class="bg-white border border-gray-200 rounded-xl text-gray-900 text-2xl font-medium h-16 flex items-center justify-center select-none cursor-pointer hover:bg-gray-50">5</button>
+      <button class="bg-white border border-gray-200 rounded-xl text-gray-900 text-2xl font-medium h-16 flex items-center justify-center select-none cursor-pointer hover:bg-gray-50">6</button>
+      <button class="bg-blue-100 border border-blue-200 rounded-xl text-blue-600 text-2xl font-medium h-16 flex items-center justify-center select-none cursor-pointer hover:bg-blue-200">−</button>
+
+      <!-- Row 4: 1, 2, 3, + -->
+      <button class="bg-white border border-gray-200 rounded-xl text-gray-900 text-2xl font-medium h-16 flex items-center justify-center select-none cursor-pointer hover:bg-gray-50">1</button>
+      <button class="bg-white border border-gray-200 rounded-xl text-gray-900 text-2xl font-medium h-16 flex items-center justify-center select-none cursor-pointer hover:bg-gray-50">2</button>
+      <button class="bg-white border border-gray-200 rounded-xl text-gray-900 text-2xl font-medium h-16 flex items-center justify-center select-none cursor-pointer hover:bg-gray-50">3</button>
+      <button class="bg-blue-100 border border-blue-200 rounded-xl text-blue-600 text-2xl font-medium h-16 flex items-center justify-center select-none cursor-pointer hover:bg-blue-200">+</button>
+
+      <!-- Row 5: 0 (wide), ., = -->
+      <button class="col-span-2 bg-white border border-gray-200 rounded-xl text-gray-900 text-2xl font-medium h-16 flex items-center justify-center select-none cursor-pointer hover:bg-gray-50">0</button>
+      <button class="bg-white border border-gray-200 rounded-xl text-gray-900 text-2xl font-medium h-16 flex items-center justify-center select-none cursor-pointer hover:bg-gray-50">.</button>
+      <button class="bg-blue-600 border border-blue-600 rounded-xl text-white text-2xl font-medium h-16 flex items-center justify-center select-none cursor-pointer hover:bg-blue-700">=</button>
+
+    </div>
+  </div>
+</body>
+</html>

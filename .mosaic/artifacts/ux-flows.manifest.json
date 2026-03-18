@@ -1,0 +1,35 @@
+{
+  "flows": [
+    "basic-calculation",
+    "chained-operations",
+    "decimal-input",
+    "error-recovery",
+    "clear-and-backspace",
+    "long-number-display"
+  ],
+  "components": [
+    "Display",
+    "NumberButton",
+    "OperatorButton",
+    "EqualsButton",
+    "DecimalButton",
+    "ClearButton",
+    "BackspaceButton",
+    "ButtonGrid",
+    "Calculator"
+  ],
+  "interaction_rules": [
+    "immediate-input-feedback",
+    "leading-zero-elimination",
+    "single-decimal-per-number",
+    "operator-replace-on-consecutive",
+    "auto-calculate-on-chained-operator",
+    "equals-after-result-noop",
+    "divide-by-zero-shows-error",
+    "error-state-blocks-operators",
+    "error-recovery-via-ac-or-digit",
+    "16-digit-limit-with-scientific-notation",
+    "auto-shrink-font-on-overflow",
+    "responsive-min-touch-target-44px"
+  ]
+}

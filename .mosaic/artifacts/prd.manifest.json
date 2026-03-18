@@ -1,0 +1,30 @@
+{
+  "features": [
+    "basic-arithmetic",
+    "display",
+    "number-pad",
+    "decimal-point",
+    "clear",
+    "backspace",
+    "chained-operations",
+    "error-handling",
+    "responsive-layout"
+  ],
+  "constraints": [
+    "frontend-only-no-backend",
+    "react-tailwind-stack",
+    "native-js-number-precision",
+    "max-16-digit-display",
+    "no-eval-or-function"
+  ],
+  "out_of_scope": [
+    "scientific-calculation",
+    "calculation-history",
+    "keyboard-shortcuts",
+    "theme-switching",
+    "unit-conversion",
+    "bracket-and-precedence",
+    "local-storage",
+    "i18n"
+  ]
+}

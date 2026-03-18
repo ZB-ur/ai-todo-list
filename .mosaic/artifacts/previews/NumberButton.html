@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>NumberButton Preview</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    body { margin: 0; padding: 16px; background: #f8fafc; font-family: system-ui, sans-serif; }
+    button:active { background-color: #f3f4f6; transform: scale(0.95); }
+  </style>
+</head>
+<body>
+  <div style="max-width: 320px; margin: 0 auto;">
+    <p class="text-sm text-gray-400 mb-3">Standard digits</p>
+    <div class="grid grid-cols-3 gap-3 mb-6">
+      <button class="bg-white border border-gray-200 rounded-xl text-gray-900 text-2xl font-medium h-16 flex items-center justify-center hover:bg-gray-50 transition-all duration-100 select-none cursor-pointer">7</button>
+      <button class="bg-white border border-gray-200 rounded-xl text-gray-900 text-2xl font-medium h-16 flex items-center justify-center hover:bg-gray-50 transition-all duration-100 select-none cursor-pointer">8</button>
+      <button class="bg-white border border-gray-200 rounded-xl text-gray-900 text-2xl font-medium h-16 flex items-center justify-center hover:bg-gray-50 transition-all duration-100 select-none cursor-pointer">9</button>
+      <button class="bg-white border border-gray-200 rounded-xl text-gray-900 text-2xl font-medium h-16 flex items-center justify-center hover:bg-gray-50 transition-all duration-100 select-none cursor-pointer">4</button>
+      <button class="bg-white border border-gray-200 rounded-xl text-gray-900 text-2xl font-medium h-16 flex items-center justify-center hover:bg-gray-50 transition-all duration-100 select-none cursor-pointer">5</button>
+      <button class="bg-white border border-gray-200 rounded-xl text-gray-900 text-2xl font-medium h-16 flex items-center justify-center hover:bg-gray-50 transition-all duration-100 select-none cursor-pointer">6</button>
+      <button class="bg-white border border-gray-200 rounded-xl text-gray-900 text-2xl font-medium h-16 flex items-center justify-center hover:bg-gray-50 transition-all duration-100 select-none cursor-pointer">1</button>
+      <button class="bg-white border border-gray-200 rounded-xl text-gray-900 text-2xl font-medium h-16 flex items-center justify-center hover:bg-gray-50 transition-all duration-100 select-none cursor-pointer">2</button>
+      <button class="bg-white border border-gray-200 rounded-xl text-gray-900 text-2xl font-medium h-16 flex items-center justify-center hover:bg-gray-50 transition-all duration-100 select-none cursor-pointer">3</button>
+    </div>
+
+    <p class="text-sm text-gray-400 mb-3">Wide zero button (col-span-2)</p>
+    <div class="grid grid-cols-3 gap-3">
+      <button class="col-span-2 bg-white border border-gray-200 rounded-xl text-gray-900 text-2xl font-medium h-16 flex items-center justify-center hover:bg-gray-50 transition-all duration-100 select-none cursor-pointer">0</button>
+      <button class="bg-white border border-gray-200 rounded-xl text-gray-900 text-2xl font-medium h-16 flex items-center justify-center hover:bg-gray-50 transition-all duration-100 select-none cursor-pointer">.</button>
+    </div>
+  </div>
+</body>
+</html>

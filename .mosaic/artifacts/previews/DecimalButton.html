@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>DecimalButton Preview</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    body { margin: 0; padding: 16px; background: #f8fafc; font-family: system-ui, sans-serif; }
+  </style>
+</head>
+<body>
+  <div style="max-width: 320px; margin: 0 auto;">
+    <p class="text-sm text-gray-500 mb-3">Default</p>
+    <button class="bg-white border border-gray-200 rounded-xl text-gray-900 text-2xl font-medium h-16 w-16 flex items-center justify-center cursor-pointer hover:bg-gray-50 active:bg-gray-100 active:scale-95 transition-all duration-100 select-none">
+      .
+    </button>
+
+    <p class="text-sm text-gray-500 mb-3 mt-6">Disabled</p>
+    <button disabled class="bg-white border border-gray-200 rounded-xl text-gray-900 text-2xl font-medium h-16 w-16 flex items-center justify-center opacity-40 cursor-not-allowed transition-all duration-100 select-none">
+      .
+    </button>
+
+    <p class="text-sm text-gray-500 mb-3 mt-6">In context (bottom row)</p>
+    <div class="grid grid-cols-4 gap-3">
+      <button class="col-span-2 bg-white border border-gray-200 rounded-xl text-gray-900 text-2xl font-medium h-16 flex items-center justify-center cursor-pointer hover:bg-gray-50 transition-all duration-100 select-none">
+        0
+      </button>
+      <button class="bg-white border border-gray-200 rounded-xl text-gray-900 text-2xl font-medium h-16 flex items-center justify-center cursor-pointer hover:bg-gray-50 transition-all duration-100 select-none">
+        .
+      </button>
+      <button class="bg-blue-600 border border-blue-600 rounded-xl text-white text-2xl font-medium h-16 flex items-center justify-center cursor-pointer hover:bg-blue-700 transition-all duration-100 select-none">
+        =
+      </button>
+    </div>
+  </div>
+</body>
+</html>
