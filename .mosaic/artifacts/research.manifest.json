@@ -1,26 +1,22 @@
 {
   "competitors": [
-    "Todoist",
-    "Microsoft To Do",
-    "TickTick",
-    "Apple Reminders",
-    "Google Tasks",
-    "Any.do"
+    "Google Calculator",
+    "Apple Calculator",
+    "Windows Calculator",
+    "Desmos",
+    "Calcbot"
   ],
   "key_insights": [
-    "极简零配置体验是差异化核心——3秒录入，无学习成本",
-    "自然语言快捷录入和全局快速添加是高价值功能",
-    "Web + Mobile 跨平台同步是用户底线需求",
-    "共享清单和轻量协作可驱动自然增长",
-    "支持竞品数据导入可降低用户迁移门槛",
-    "AI 辅助（智能分类、优先级建议）是趋势方向"
+    "核心体验优先：交互响应速度和视觉清晰度是关键竞争力",
+    "键盘优先设计：桌面端需完整键盘快捷键支持",
+    "历史记录是低成本高价值的差异化功能",
+    "JavaScript 浮点精度问题必须在 MVP 阶段解决",
+    "响应式设计一套代码适配多端"
   ],
   "feasibility": "high",
   "risks": [
-    "市场高度饱和，获客成本高",
-    "用户迁移成本低导致留存困难",
-    "Freemium 模式付费转化率普遍偏低（2-5%）",
-    "Apple/Google/Microsoft 系统级集成优势难以对抗",
-    "功能同质化严重，需持续差异化投入"
+    "JavaScript 浮点数精度问题可能导致计算结果不准确",
+    "作为工具类产品，用户留存率天然偏低",
+    "市场高度成熟，差异化空间有限"
   ]
 }
