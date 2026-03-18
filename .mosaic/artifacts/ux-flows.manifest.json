@@ -1,0 +1,29 @@
+{
+  "flows": [
+    "basic-calc",
+    "input-correction",
+    "history-recall",
+    "error-recovery",
+    "decimal-sign"
+  ],
+  "components": [
+    "Calculator",
+    "Display",
+    "ButtonGrid",
+    "Button",
+    "HistoryPanel",
+    "HistoryItem"
+  ],
+  "interaction_rules": [
+    "real-time-preview",
+    "expression-length-limit-50",
+    "consecutive-operator-replace",
+    "leading-zero-normalize",
+    "button-press-feedback-100ms",
+    "keyboard-shortcut-mapping",
+    "history-scroll-newest-first",
+    "localstorage-persist-on-calc",
+    "large-number-scientific-notation",
+    "error-no-history"
+  ]
+}
