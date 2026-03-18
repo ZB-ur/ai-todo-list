@@ -1,0 +1,7 @@
+{
+  "endpoints": [],
+  "models": [
+    "HistoryEntry"
+  ],
+  "notes": "Pure frontend app — no REST endpoints. HistoryEntry schema documents the localStorage contract only."
+}

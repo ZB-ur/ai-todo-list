@@ -1,0 +1,37 @@
+openapi: "3.0.3"
+info:
+  title: Simple Calculator
+  version: "1.0.0"
+  description: |
+    纯前端计算器应用，无后端 API。
+    所有计算在客户端完成，历史记录通过 localStorage 持久化。
+    本文件仅作为 pipeline 占位，供 Validator 消费。
+
+    客户端存储契约（localStorage）：
+    - key: "calc_history"
+    - value: JSON 数组，最多 20 条
+    - 条目结构: { "expression": "1+2", "result": "3", "timestamp": 1700000000000 }
+
+paths: {}
+
+components:
+  schemas:
+    HistoryEntry:
+      type: object
+      description: localStorage 中单条计算历史记录
+      required:
+        - expression
+        - result
+        - timestamp
+      properties:
+        expression:
+          type: string
+          description: 计算表达式（如 "1+2"）
+          maxLength: 50
+        result:
+          type: string
+          description: 计算结果（如 "3"、"错误"、"格式错误"）
+        timestamp:
+          type: integer
+          format: int64
+          description: 计算完成时间戳（毫秒）
