@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>HistoryToggle Preview</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    body { margin: 0; padding: 16px; background: #f8fafc; font-family: system-ui, sans-serif; }
+  </style>
+</head>
+<body>
+  <p class="text-sm text-gray-600 mb-6">HistoryToggle — mobile-only floating action button with badge</p>
+
+  <!-- States displayed inline for preview -->
+  <div class="flex flex-wrap gap-12 items-end">
+
+    <!-- Closed state with count badge -->
+    <div class="text-center">
+      <p class="text-xs text-gray-400 mb-3">Closed (5 records)</p>
+      <div class="relative inline-flex">
+        <button class="
+          bg-blue-600 text-white
+          rounded-xl shadow-md
+          h-14 w-14 flex items-center justify-center
+          hover:bg-blue-700 active:bg-blue-800
+          transition-colors duration-100
+          cursor-pointer select-none
+        ">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-6 h-6">
+            <circle cx="12" cy="12" r="10" />
+            <polyline points="12 6 12 12 16 14" />
+          </svg>
+        </button>
+        <span class="
+          absolute -top-1 -right-1
+          bg-white text-blue-600
+          text-xs font-bold
+          min-w-[1.25rem] h-5
+          flex items-center justify-center
+          rounded-full border border-blue-600
+          px-1
+        ">5</span>
+      </div>
+    </div>
+
+    <!-- Closed state with zero count (no badge) -->
+    <div class="text-center">
+      <p class="text-xs text-gray-400 mb-3">Closed (0 records)</p>
+      <div class="relative inline-flex">
+        <button class="
+          bg-blue-600 text-white
+          rounded-xl shadow-md
+          h-14 w-14 flex items-center justify-center
+          hover:bg-blue-700 active:bg-blue-800
+          transition-colors duration-100
+          cursor-pointer select-none
+        ">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-6 h-6">
+            <circle cx="12" cy="12" r="10" />
+            <polyline points="12 6 12 12 16 14" />
+          </svg>
+        </button>
+      </div>
+    </div>
+
+    <!-- Open state (X icon, no badge) -->
+    <div class="text-center">
+      <p class="text-xs text-gray-400 mb-3">Open</p>
+      <div class="relative inline-flex">
+        <button class="
+          bg-blue-600 text-white
+          rounded-xl shadow-md
+          h-14 w-14 flex items-center justify-center
+          hover:bg-blue-700 active:bg-blue-800
+          transition-colors duration-100
+          cursor-pointer select-none
+        ">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-6 h-6">
+            <path d="M18 6L6 18M6 6l12 12" />
+          </svg>
+        </button>
+      </div>
+    </div>
+
+    <!-- Closed state with large count -->
+    <div class="text-center">
+      <p class="text-xs text-gray-400 mb-3">Closed (120 records)</p>
+      <div class="relative inline-flex">
+        <button class="
+          bg-blue-600 text-white
+          rounded-xl shadow-md
+          h-14 w-14 flex items-center justify-center
+          hover:bg-blue-700 active:bg-blue-800
+          transition-colors duration-100
+          cursor-pointer select-none
+        ">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-6 h-6">
+            <circle cx="12" cy="12" r="10" />
+            <polyline points="12 6 12 12 16 14" />
+          </svg>
+        </button>
+        <span class="
+          absolute -top-1 -right-1
+          bg-white text-blue-600
+          text-xs font-bold
+          min-w-[1.25rem] h-5
+          flex items-center justify-center
+          rounded-full border border-blue-600
+          px-1
+        ">99+</span>
+      </div>
+    </div>
+
+  </div>
+</body>
+</html>

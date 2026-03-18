@@ -1,0 +1,57 @@
+{
+  "components": [
+    {
+      "name": "CalcButton",
+      "file": "components/CalcButton.tsx",
+      "covers_flow": "basic-calculation"
+    },
+    {
+      "name": "Display",
+      "file": "components/Display.tsx",
+      "covers_flow": "basic-calculation"
+    },
+    {
+      "name": "HistoryRecord",
+      "file": "components/HistoryRecord.tsx",
+      "covers_flow": "calculation-history"
+    },
+    {
+      "name": "HistoryToggle",
+      "file": "components/HistoryToggle.tsx",
+      "covers_flow": "responsive-layout"
+    },
+    {
+      "name": "ButtonPanel",
+      "file": "components/ButtonPanel.tsx",
+      "covers_flow": "basic-calculation"
+    },
+    {
+      "name": "HistoryPanel",
+      "file": "components/HistoryPanel.tsx",
+      "covers_flow": "calculation-history"
+    },
+    {
+      "name": "Calculator",
+      "file": "components/Calculator.tsx",
+      "covers_flow": "basic-calculation"
+    }
+  ],
+  "screenshots": [
+    "screenshots/CalcButton.png",
+    "screenshots/Display.png",
+    "screenshots/HistoryRecord.png",
+    "screenshots/HistoryToggle.png",
+    "screenshots/ButtonPanel.png",
+    "screenshots/HistoryPanel.png",
+    "screenshots/Calculator.png"
+  ],
+  "previews": [
+    "previews/CalcButton.html",
+    "previews/Display.html",
+    "previews/HistoryRecord.html",
+    "previews/HistoryToggle.html",
+    "previews/ButtonPanel.html",
+    "previews/HistoryPanel.html",
+    "previews/Calculator.html"
+  ]
+}

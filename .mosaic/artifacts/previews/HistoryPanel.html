@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>HistoryPanel Preview</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    body { margin: 0; padding: 16px; background: #f8fafc; font-family: system-ui, sans-serif; }
+  </style>
+</head>
+<body>
+  <div style="display: flex; gap: 32px; align-items: flex-start;">
+
+    <!-- Desktop sidebar view -->
+    <div>
+      <div class="text-xs text-gray-400 mb-2 font-semibold uppercase tracking-wide">Desktop Sidebar</div>
+      <div class="flex flex-col bg-white border border-gray-200 rounded-xl w-80" style="height: 480px;">
+        <div class="flex items-center justify-between px-6 py-4 border-b border-gray-200">
+          <h2 class="text-lg font-semibold text-gray-900">History</h2>
+          <span class="text-sm text-gray-600">6 items</span>
+        </div>
+        <div class="flex-1 overflow-y-auto px-3 py-3 space-y-1">
+
+          <button class="w-full text-left px-3 py-2.5 rounded-lg hover:bg-slate-50 transition-colors duration-100 cursor-pointer group">
+            <div class="text-sm text-gray-600 truncate">sin(45) × 2</div>
+            <div class="flex items-center justify-between mt-0.5">
+              <span class="text-base font-semibold text-gray-900">1.4142</span>
+              <span class="text-xs text-gray-400 opacity-0 group-hover:opacity-100 transition-opacity">Just now</span>
+            </div>
+          </button>
+
+          <button class="w-full text-left px-3 py-2.5 rounded-lg hover:bg-slate-50 transition-colors duration-100 cursor-pointer group">
+            <div class="text-sm text-gray-600 truncate">1024 ÷ 16</div>
+            <div class="flex items-center justify-between mt-0.5">
+              <span class="text-base font-semibold text-gray-900">64</span>
+              <span class="text-xs text-gray-400 opacity-0 group-hover:opacity-100 transition-opacity">3m ago</span>
+            </div>
+          </button>
+
+          <button class="w-full text-left px-3 py-2.5 rounded-lg hover:bg-slate-50 transition-colors duration-100 cursor-pointer group">
+            <div class="text-sm text-gray-600 truncate">15% × 89.99</div>
+            <div class="flex items-center justify-between mt-0.5">
+              <span class="text-base font-semibold text-gray-900">13.4985</span>
+              <span class="text-xs text-gray-400 opacity-0 group-hover:opacity-100 transition-opacity">12m ago</span>
+            </div>
+          </button>
+
+          <button class="w-full text-left px-3 py-2.5 rounded-lg hover:bg-slate-50 transition-colors duration-100 cursor-pointer group">
+            <div class="text-sm text-gray-600 truncate">3 + 5 × 2</div>
+            <div class="flex items-center justify-between mt-0.5">
+              <span class="text-base font-semibold text-gray-900">13</span>
+              <span class="text-xs text-gray-400 opacity-0 group-hover:opacity-100 transition-opacity">1h ago</span>
+            </div>
+          </button>
+
+          <button class="w-full text-left px-3 py-2.5 rounded-lg hover:bg-slate-50 transition-colors duration-100 cursor-pointer group">
+            <div class="text-sm text-gray-600 truncate">√144</div>
+            <div class="flex items-center justify-between mt-0.5">
+              <span class="text-base font-semibold text-gray-900">12</span>
+              <span class="text-xs text-gray-400 opacity-0 group-hover:opacity-100 transition-opacity">2h ago</span>
+            </div>
+          </button>
+
+          <button class="w-full text-left px-3 py-2.5 rounded-lg hover:bg-slate-50 transition-colors duration-100 cursor-pointer group">
+            <div class="text-sm text-gray-600 truncate">99 × 99</div>
+            <div class="flex items-center justify-between mt-0.5">
+              <span class="text-base font-semibold text-gray-900">9801</span>
+              <span class="text-xs text-gray-400 opacity-0 group-hover:opacity-100 transition-opacity">5h ago</span>
+            </div>
+          </button>
+
+        </div>
+      </div>
+    </div>
+
+    <!-- Empty state -->
+    <div>
+      <div class="text-xs text-gray-400 mb-2 font-semibold uppercase tracking-wide">Empty State</div>
+      <div class="flex flex-col bg-white border border-gray-200 rounded-xl w-80" style="height: 480px;">
+        <div class="flex items-center justify-between px-6 py-4 border-b border-gray-200">
+          <h2 class="text-lg font-semibold text-gray-900">History</h2>
+          <span class="text-sm text-gray-600">0 items</span>
+        </div>
+        <div class="flex flex-col items-center justify-center flex-1 px-6 text-center">
+          <div class="text-gray-400 text-sm">No calculations yet</div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</body>
+</html>
