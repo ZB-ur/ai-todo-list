@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Display Preview</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    body { margin: 0; padding: 16px; background: #f8fafc; font-family: system-ui, sans-serif; }
+  </style>
+</head>
+<body>
+  <div style="max-width: 400px; margin: 0 auto; display: flex; flex-direction: column; gap: 24px;">
+
+    <!-- Default state -->
+    <div class="w-full bg-gray-900 rounded-xl p-6 min-h-[96px] flex items-end justify-end overflow-hidden">
+      <span class="text-5xl font-light text-white tracking-wide truncate max-w-full text-right">0</span>
+    </div>
+
+    <!-- Mid-length value -->
+    <div class="w-full bg-gray-900 rounded-xl p-6 min-h-[96px] flex items-end justify-end overflow-hidden">
+      <span class="text-4xl font-light text-white tracking-wide truncate max-w-full text-right">123,456.78</span>
+    </div>
+
+    <!-- Long value (auto-shrink) -->
+    <div class="w-full bg-gray-900 rounded-xl p-6 min-h-[96px] flex items-end justify-end overflow-hidden">
+      <span class="text-2xl font-light text-white tracking-wide truncate max-w-full text-right">9,876,543,210.12345</span>
+    </div>
+
+  </div>
+</body>
+</html>
