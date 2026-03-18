@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CalcButton Preview</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    body { margin: 0; padding: 16px; background: #f8fafc; font-family: system-ui, sans-serif; }
+  </style>
+</head>
+<body>
+  <div class="max-w-md mx-auto space-y-8">
+
+    <!-- Section: Button Types -->
+    <div>
+      <p class="text-sm font-semibold text-gray-400 mb-3 uppercase tracking-wide">Button Types</p>
+      <div class="grid grid-cols-4 gap-3">
+        <!-- Digit -->
+        <button class="bg-white text-gray-900 border border-gray-200 hover:bg-gray-50 active:bg-gray-100 rounded-xl text-lg font-semibold h-14 flex items-center justify-center cursor-pointer select-none transition-colors duration-100">7</button>
+        <button class="bg-white text-gray-900 border border-gray-200 hover:bg-gray-50 active:bg-gray-100 rounded-xl text-lg font-semibold h-14 flex items-center justify-center cursor-pointer select-none transition-colors duration-100">8</button>
+        <button class="bg-white text-gray-900 border border-gray-200 hover:bg-gray-50 active:bg-gray-100 rounded-xl text-lg font-semibold h-14 flex items-center justify-center cursor-pointer select-none transition-colors duration-100">9</button>
+        <!-- Operator -->
+        <button class="bg-blue-50 text-blue-600 border border-blue-200 hover:bg-blue-100 active:bg-blue-200 rounded-xl text-lg font-semibold h-14 flex items-center justify-center cursor-pointer select-none transition-colors duration-100">×</button>
+
+        <button class="bg-white text-gray-900 border border-gray-200 hover:bg-gray-50 active:bg-gray-100 rounded-xl text-lg font-semibold h-14 flex items-center justify-center cursor-pointer select-none transition-colors duration-100">4</button>
+        <button class="bg-white text-gray-900 border border-gray-200 hover:bg-gray-50 active:bg-gray-100 rounded-xl text-lg font-semibold h-14 flex items-center justify-center cursor-pointer select-none transition-colors duration-100">5</button>
+        <button class="bg-white text-gray-900 border border-gray-200 hover:bg-gray-50 active:bg-gray-100 rounded-xl text-lg font-semibold h-14 flex items-center justify-center cursor-pointer select-none transition-colors duration-100">6</button>
+        <!-- Operator -->
+        <button class="bg-blue-50 text-blue-600 border border-blue-200 hover:bg-blue-100 active:bg-blue-200 rounded-xl text-lg font-semibold h-14 flex items-center justify-center cursor-pointer select-none transition-colors duration-100">−</button>
+
+        <button class="bg-white text-gray-900 border border-gray-200 hover:bg-gray-50 active:bg-gray-100 rounded-xl text-lg font-semibold h-14 flex items-center justify-center cursor-pointer select-none transition-colors duration-100">1</button>
+        <button class="bg-white text-gray-900 border border-gray-200 hover:bg-gray-50 active:bg-gray-100 rounded-xl text-lg font-semibold h-14 flex items-center justify-center cursor-pointer select-none transition-colors duration-100">2</button>
+        <button class="bg-white text-gray-900 border border-gray-200 hover:bg-gray-50 active:bg-gray-100 rounded-xl text-lg font-semibold h-14 flex items-center justify-center cursor-pointer select-none transition-colors duration-100">3</button>
+        <!-- Operator -->
+        <button class="bg-blue-50 text-blue-600 border border-blue-200 hover:bg-blue-100 active:bg-blue-200 rounded-xl text-lg font-semibold h-14 flex items-center justify-center cursor-pointer select-none transition-colors duration-100">+</button>
+
+        <!-- Action -->
+        <button class="bg-gray-100 text-gray-600 border border-gray-200 hover:bg-gray-200 active:bg-gray-300 rounded-xl text-lg font-semibold h-14 flex items-center justify-center cursor-pointer select-none transition-colors duration-100">C</button>
+        <!-- Digit spanning 1 -->
+        <button class="bg-white text-gray-900 border border-gray-200 hover:bg-gray-50 active:bg-gray-100 rounded-xl text-lg font-semibold h-14 flex items-center justify-center cursor-pointer select-none transition-colors duration-100">0</button>
+        <!-- Action -->
+        <button class="bg-gray-100 text-gray-600 border border-gray-200 hover:bg-gray-200 active:bg-gray-300 rounded-xl text-lg font-semibold h-14 flex items-center justify-center cursor-pointer select-none transition-colors duration-100">⌫</button>
+        <!-- Equals -->
+        <button class="bg-blue-600 text-white border border-blue-600 hover:bg-blue-700 active:bg-blue-800 rounded-xl text-lg font-semibold h-14 flex items-center justify-center cursor-pointer select-none transition-colors duration-100">=</button>
+      </div>
+    </div>
+
+    <!-- Section: Span Demo -->
+    <div>
+      <p class="text-sm font-semibold text-gray-400 mb-3 uppercase tracking-wide">Span = 2</p>
+      <div class="grid grid-cols-4 gap-3">
+        <button class="col-span-2 bg-white text-gray-900 border border-gray-200 hover:bg-gray-50 active:bg-gray-100 rounded-xl text-lg font-semibold h-14 flex items-center justify-center cursor-pointer select-none transition-colors duration-100">0</button>
+        <button class="bg-gray-100 text-gray-600 border border-gray-200 hover:bg-gray-200 active:bg-gray-300 rounded-xl text-lg font-semibold h-14 flex items-center justify-center cursor-pointer select-none transition-colors duration-100">.</button>
+        <button class="bg-blue-600 text-white border border-blue-600 hover:bg-blue-700 active:bg-blue-800 rounded-xl text-lg font-semibold h-14 flex items-center justify-center cursor-pointer select-none transition-colors duration-100">=</button>
+      </div>
+    </div>
+
+    <!-- Section: Disabled State -->
+    <div>
+      <p class="text-sm font-semibold text-gray-400 mb-3 uppercase tracking-wide">Disabled</p>
+      <div class="grid grid-cols-4 gap-3">
+        <button disabled class="bg-white text-gray-900 border border-gray-200 rounded-xl text-lg font-semibold h-14 flex items-center justify-center select-none opacity-40 cursor-not-allowed">5</button>
+        <button disabled class="bg-blue-50 text-blue-600 border border-blue-200 rounded-xl text-lg font-semibold h-14 flex items-center justify-center select-none opacity-40 cursor-not-allowed">+</button>
+        <button disabled class="bg-gray-100 text-gray-600 border border-gray-200 rounded-xl text-lg font-semibold h-14 flex items-center justify-center select-none opacity-40 cursor-not-allowed">C</button>
+        <button disabled class="bg-blue-600 text-white border border-blue-600 rounded-xl text-lg font-semibold h-14 flex items-center justify-center select-none opacity-40 cursor-not-allowed">=</button>
+      </div>
+    </div>
+
+  </div>
+</body>
+</html>

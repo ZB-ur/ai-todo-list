@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Display Preview</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>body { margin: 0; padding: 16px; background: #f8fafc; font-family: system-ui, sans-serif; }</style>
+</head>
+<body>
+  <div class="max-w-sm mx-auto space-y-4">
+    <!-- With expression -->
+    <div class="bg-white border border-gray-200 rounded-xl p-6 text-right">
+      <div class="text-sm text-gray-600 truncate min-h-[1.25rem]">3 + 5 × 2</div>
+      <div class="text-3xl font-bold text-gray-900 truncate mt-1">13</div>
+    </div>
+
+    <!-- Empty expression (initial state) -->
+    <div class="bg-white border border-gray-200 rounded-xl p-6 text-right">
+      <div class="text-sm text-gray-600 truncate min-h-[1.25rem]"></div>
+      <div class="text-3xl font-bold text-gray-900 truncate mt-1">0</div>
+    </div>
+
+    <!-- Long expression with overflow -->
+    <div class="bg-white border border-gray-200 rounded-xl p-6 text-right">
+      <div class="text-sm text-gray-600 truncate min-h-[1.25rem]">123 + 456 × 789 − 321 ÷ 654 + 987</div>
+      <div class="text-3xl font-bold text-gray-900 truncate mt-1">359,838.509174</div>
+    </div>
+  </div>
+</body>
+</html>

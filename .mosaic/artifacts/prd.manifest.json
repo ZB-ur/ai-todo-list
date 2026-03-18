@@ -1,0 +1,28 @@
+{
+  "features": [
+    "F1-basic-arithmetic",
+    "F2-expression-display",
+    "F3-button-panel",
+    "F4-keyboard-input",
+    "F5-calculation-history",
+    "F6-button-feedback",
+    "F7-responsive-layout"
+  ],
+  "constraints": [
+    "frontend-only-no-backend",
+    "react-tailwind-stack",
+    "no-eval-safe-parsing",
+    "float-precision-handling",
+    "divide-by-zero-error",
+    "modern-browser-compat"
+  ],
+  "out_of_scope": [
+    "scientific-calc",
+    "programmer-mode",
+    "graphing",
+    "unit-conversion",
+    "user-accounts",
+    "theme-switching",
+    "i18n"
+  ]
+}
