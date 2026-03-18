@@ -1,0 +1,41 @@
+openapi: "3.0.3"
+info:
+  title: Simple Calculator API
+  version: "1.0.0"
+  description: |
+    This application is a pure frontend calculator.
+    All computation is performed client-side in the browser.
+    Calculation history is persisted via localStorage.
+    No backend API endpoints are required.
+paths: {}
+components:
+  schemas:
+    HistoryRecord:
+      type: object
+      description: A single calculation history entry stored in localStorage
+      properties:
+        expression:
+          type: string
+          example: "3 + 5 × 2"
+        result:
+          type: string
+          example: "13"
+        timestamp:
+          type: integer
+          format: int64
+          description: Unix timestamp in milliseconds
+      required:
+        - expression
+        - result
+        - timestamp
+    HistoryStore:
+      type: object
+      description: localStorage schema under key "calc_history"
+      properties:
+        records:
+          type: array
+          maxItems: 20
+          items:
+            $ref: "#/components/schemas/HistoryRecord"
+      required:
+        - records

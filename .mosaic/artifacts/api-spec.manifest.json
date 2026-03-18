@@ -1,0 +1,8 @@
+{
+  "endpoints": [],
+  "models": [
+    "HistoryRecord",
+    "HistoryStore"
+  ],
+  "notes": "Pure frontend application — no backend API endpoints. Models describe localStorage data shapes only."
+}
