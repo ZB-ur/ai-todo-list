@@ -1,0 +1,11 @@
+openapi: "3.0.3"
+info:
+  title: Simple Calculator API
+  version: "1.0.0"
+  description: >
+    This application is a pure frontend calculator with no backend dependency.
+    All computation is performed client-side using React + Tailwind CSS.
+    No API endpoints are required.
+paths: {}
+components:
+  schemas: {}
