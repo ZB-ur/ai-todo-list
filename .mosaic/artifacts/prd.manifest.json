@@ -1,0 +1,27 @@
+{
+  "features": [
+    "basic-arithmetic",
+    "display",
+    "button-pad",
+    "keyboard-input",
+    "error-handling",
+    "responsive-layout"
+  ],
+  "constraints": [
+    "纯前端实现，无需后端服务",
+    "技术栈：React + Tailwind CSS",
+    "浮点运算精度需特殊处理，禁止使用 eval() 或 Function()",
+    "最小可触控目标 48×48px",
+    "支持主流浏览器最新两个版本"
+  ],
+  "out_of_scope": [
+    "科学计算功能",
+    "计算历史记录",
+    "单位换算",
+    "多行/笔记式计算",
+    "图形/函数绘图",
+    "主题切换/暗黑模式",
+    "本地存储/数据持久化",
+    "国际化/多语言支持"
+  ]
+}
