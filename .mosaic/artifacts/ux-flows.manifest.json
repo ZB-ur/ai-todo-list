@@ -1,0 +1,106 @@
+{
+  "flows": [
+    {
+      "name": "sprint-lifecycle",
+      "covers_features": [
+        "F-001",
+        "F-002"
+      ]
+    },
+    {
+      "name": "standup-flow",
+      "covers_features": [
+        "F-003",
+        "F-008"
+      ]
+    },
+    {
+      "name": "review-flow",
+      "covers_features": [
+        "F-004"
+      ]
+    },
+    {
+      "name": "retro-flow",
+      "covers_features": [
+        "F-005",
+        "F-006"
+      ]
+    },
+    {
+      "name": "task-board-flow",
+      "covers_features": [
+        "F-006"
+      ]
+    },
+    {
+      "name": "dashboard-flow",
+      "covers_features": [
+        "F-007",
+        "F-008"
+      ]
+    }
+  ],
+  "components": [
+    "AppShell",
+    "Sidebar",
+    "BottomTabBar",
+    "PageHeader",
+    "SprintProgressCard",
+    "UpcomingCeremoniesCard",
+    "TaskStatsCard",
+    "ActionItemsReminderCard",
+    "CeremonyBanner",
+    "SprintForm",
+    "SprintList",
+    "SprintCard",
+    "CeremonyConfigPanel",
+    "CeremonyTypeTag",
+    "StandupQuickInput",
+    "ParticipantSelector",
+    "StandupHistoryList",
+    "StandupEntryCard",
+    "ReviewRecordForm",
+    "DemoItemCard",
+    "FeedbackEntry",
+    "RetroBoard",
+    "RetroItemCard",
+    "ActionItemBadge",
+    "KanbanBoard",
+    "KanbanColumn",
+    "TaskCard",
+    "TaskForm",
+    "TaskDetailDrawer",
+    "ConfirmDialog",
+    "Toast",
+    "EmptyState",
+    "SkeletonLoader",
+    "ProgressBar",
+    "DatePicker",
+    "FormField",
+    "Badge",
+    "IconButton",
+    "SpinnerButton"
+  ],
+  "interaction_rules": [
+    "validate-on-blur-and-submit",
+    "field-level-error-red-border-and-message",
+    "global-error-toast-auto-dismiss-5s",
+    "active-sprint-conflict-inline-warning",
+    "page-skeleton-loading",
+    "button-spinner-disable-on-submit",
+    "kanban-optimistic-update-with-rollback",
+    "dnd-kit-drag-lift-shadow-and-placeholder",
+    "mobile-long-press-300ms-drag",
+    "responsive-breakpoints-1024-768",
+    "desktop-sidebar-navigation",
+    "mobile-bottom-tab-navigation",
+    "mobile-kanban-horizontal-scroll",
+    "standup-quick-input-3-taps-mobile",
+    "delete-confirmation-dialog-required",
+    "sprint-delete-warns-cascade",
+    "empty-state-with-cta-guidance",
+    "ceremony-banner-blue-today-orange-overdue",
+    "nav-shows-current-sprint-name"
+  ]
+}

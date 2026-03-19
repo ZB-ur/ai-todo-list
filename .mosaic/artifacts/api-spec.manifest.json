@@ -1,0 +1,290 @@
+{
+  "endpoints": [
+    {
+      "method": "GET",
+      "path": "/dashboard",
+      "covers_features": [
+        "F-007",
+        "F-008"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/sprints",
+      "covers_features": [
+        "F-001"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/sprints",
+      "covers_features": [
+        "F-001"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/sprints/{sprintId}",
+      "covers_features": [
+        "F-001"
+      ]
+    },
+    {
+      "method": "PUT",
+      "path": "/sprints/{sprintId}",
+      "covers_features": [
+        "F-001"
+      ]
+    },
+    {
+      "method": "DELETE",
+      "path": "/sprints/{sprintId}",
+      "covers_features": [
+        "F-001"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/sprints/{sprintId}/archive",
+      "covers_features": [
+        "F-001"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/sprints/{sprintId}/ceremonies",
+      "covers_features": [
+        "F-002"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/sprints/{sprintId}/ceremonies",
+      "covers_features": [
+        "F-002"
+      ]
+    },
+    {
+      "method": "PUT",
+      "path": "/sprints/{sprintId}/ceremonies/{ceremonyId}",
+      "covers_features": [
+        "F-002"
+      ]
+    },
+    {
+      "method": "DELETE",
+      "path": "/sprints/{sprintId}/ceremonies/{ceremonyId}",
+      "covers_features": [
+        "F-002"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/sprints/{sprintId}/ceremonies/{ceremonyId}/mark-done",
+      "covers_features": [
+        "F-002",
+        "F-008"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/sprints/{sprintId}/standups",
+      "covers_features": [
+        "F-003"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/sprints/{sprintId}/standups",
+      "covers_features": [
+        "F-003"
+      ]
+    },
+    {
+      "method": "PUT",
+      "path": "/sprints/{sprintId}/standups/{standupEntryId}",
+      "covers_features": [
+        "F-003"
+      ]
+    },
+    {
+      "method": "DELETE",
+      "path": "/sprints/{sprintId}/standups/{standupEntryId}",
+      "covers_features": [
+        "F-003"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/sprints/{sprintId}/reviews",
+      "covers_features": [
+        "F-004"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/sprints/{sprintId}/reviews",
+      "covers_features": [
+        "F-004"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/sprints/{sprintId}/reviews/{reviewId}",
+      "covers_features": [
+        "F-004"
+      ]
+    },
+    {
+      "method": "PUT",
+      "path": "/sprints/{sprintId}/reviews/{reviewId}",
+      "covers_features": [
+        "F-004"
+      ]
+    },
+    {
+      "method": "DELETE",
+      "path": "/sprints/{sprintId}/reviews/{reviewId}",
+      "covers_features": [
+        "F-004"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/sprints/{sprintId}/retros",
+      "covers_features": [
+        "F-005"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/sprints/{sprintId}/retros",
+      "covers_features": [
+        "F-005"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/sprints/{sprintId}/retros/{retroId}",
+      "covers_features": [
+        "F-005"
+      ]
+    },
+    {
+      "method": "PUT",
+      "path": "/sprints/{sprintId}/retros/{retroId}",
+      "covers_features": [
+        "F-005"
+      ]
+    },
+    {
+      "method": "DELETE",
+      "path": "/sprints/{sprintId}/retros/{retroId}",
+      "covers_features": [
+        "F-005"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/sprints/{sprintId}/retros/{retroId}/items",
+      "covers_features": [
+        "F-005"
+      ]
+    },
+    {
+      "method": "PUT",
+      "path": "/sprints/{sprintId}/retros/{retroId}/items/{itemId}",
+      "covers_features": [
+        "F-005"
+      ]
+    },
+    {
+      "method": "DELETE",
+      "path": "/sprints/{sprintId}/retros/{retroId}/items/{itemId}",
+      "covers_features": [
+        "F-005"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/sprints/{sprintId}/retros/{retroId}/items/{itemId}/convert-to-task",
+      "covers_features": [
+        "F-005",
+        "F-006"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/action-items",
+      "covers_features": [
+        "F-005",
+        "F-007"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/sprints/{sprintId}/tasks",
+      "covers_features": [
+        "F-006",
+        "F-007"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/sprints/{sprintId}/tasks",
+      "covers_features": [
+        "F-006"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/sprints/{sprintId}/tasks/{taskId}",
+      "covers_features": [
+        "F-006"
+      ]
+    },
+    {
+      "method": "PUT",
+      "path": "/sprints/{sprintId}/tasks/{taskId}",
+      "covers_features": [
+        "F-006"
+      ]
+    },
+    {
+      "method": "DELETE",
+      "path": "/sprints/{sprintId}/tasks/{taskId}",
+      "covers_features": [
+        "F-006"
+      ]
+    },
+    {
+      "method": "PATCH",
+      "path": "/sprints/{sprintId}/tasks/{taskId}/move",
+      "covers_features": [
+        "F-006"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/participants",
+      "covers_features": [
+        "F-003",
+        "F-006"
+      ]
+    }
+  ],
+  "models": [
+    "Sprint",
+    "Ceremony",
+    "StandupEntry",
+    "StandupDay",
+    "ReviewRecord",
+    "DemoItem",
+    "Feedback",
+    "RetroRecord",
+    "RetroItem",
+    "Task",
+    "TaskStats",
+    "DashboardResponse"
+  ]
+}

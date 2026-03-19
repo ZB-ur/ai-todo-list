@@ -1,0 +1,1535 @@
+openapi: 3.0.3
+info:
+  title: Agile Sprint Manager API
+  description: 轻量敏捷迭代管理系统 API —— 为 3-10 人小型创业团队提供以迭代仪式为核心的管理工具
+  version: 1.0.0
+
+servers:
+  - url: /api/v1
+    description: Local development server
+
+tags:
+  - name: Dashboard
+    description: 仪表盘聚合数据
+  - name: Sprints
+    description: 迭代周期管理
+  - name: Ceremonies
+    description: 仪式配置与查询
+  - name: Standups
+    description: 站会记录
+  - name: Reviews
+    description: Sprint 评审记录
+  - name: Retros
+    description: Sprint 回顾记录
+  - name: Tasks
+    description: 任务看板
+  - name: Participants
+    description: 参与者
+
+paths:
+  # ── Dashboard ──────────────────────────────────────────
+  /dashboard:
+    get:
+      tags: [Dashboard]
+      operationId: getDashboard
+      summary: 获取仪表盘聚合数据
+      description: |
+        返回首页所需的全部聚合数据：当前 Sprint 概览、即将到来的仪式、
+        任务统计、未完成行动项、今日仪式提醒。
+      responses:
+        "200":
+          description: 仪表盘数据
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DashboardResponse"
+
+  # ── Sprints ────────────────────────────────────────────
+  /sprints:
+    get:
+      tags: [Sprints]
+      operationId: listSprints
+      summary: 获取 Sprint 列表
+      description: 按创建时间倒序返回所有 Sprint，支持按状态筛选。
+      parameters:
+        - name: status
+          in: query
+          schema:
+            type: string
+            enum: [active, archived, all]
+            default: all
+        - $ref: "#/components/parameters/PageParam"
+        - $ref: "#/components/parameters/PageSizeParam"
+      responses:
+        "200":
+          description: Sprint 列表
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SprintListResponse"
+
+    post:
+      tags: [Sprints]
+      operationId: createSprint
+      summary: 创建新 Sprint
+      description: |
+        创建新的迭代周期。同一时间只能有一个活跃 Sprint，
+        若已存在活跃 Sprint 则返回 409 冲突。
+        创建成功后自动填充默认仪式模板。
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/SprintCreateRequest"
+      responses:
+        "201":
+          description: Sprint 创建成功
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Sprint"
+        "409":
+          description: 已存在活跃 Sprint
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "422":
+          $ref: "#/components/responses/ValidationError"
+
+  /sprints/{sprintId}:
+    parameters:
+      - $ref: "#/components/parameters/SprintIdParam"
+
+    get:
+      tags: [Sprints]
+      operationId: getSprint
+      summary: 获取 Sprint 详情
+      responses:
+        "200":
+          description: Sprint 详情
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Sprint"
+        "404":
+          $ref: "#/components/responses/NotFound"
+
+    put:
+      tags: [Sprints]
+      operationId: updateSprint
+      summary: 编辑 Sprint
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/SprintUpdateRequest"
+      responses:
+        "200":
+          description: 更新成功
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Sprint"
+        "404":
+          $ref: "#/components/responses/NotFound"
+        "422":
+          $ref: "#/components/responses/ValidationError"
+
+    delete:
+      tags: [Sprints]
+      operationId: deleteSprint
+      summary: 删除 Sprint
+      description: 删除 Sprint 及其关联的所有仪式记录和任务。
+      responses:
+        "204":
+          description: 删除成功
+        "404":
+          $ref: "#/components/responses/NotFound"
+
+  /sprints/{sprintId}/archive:
+    parameters:
+      - $ref: "#/components/parameters/SprintIdParam"
+    post:
+      tags: [Sprints]
+      operationId: archiveSprint
+      summary: 结束并归档 Sprint
+      description: 将活跃 Sprint 状态变更为 archived。
+      responses:
+        "200":
+          description: 归档成功
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Sprint"
+        "404":
+          $ref: "#/components/responses/NotFound"
+        "409":
+          description: Sprint 已归档
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  # ── Ceremonies ─────────────────────────────────────────
+  /sprints/{sprintId}/ceremonies:
+    parameters:
+      - $ref: "#/components/parameters/SprintIdParam"
+
+    get:
+      tags: [Ceremonies]
+      operationId: listCeremonies
+      summary: 获取 Sprint 的仪式配置列表
+      responses:
+        "200":
+          description: 仪式列表
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/Ceremony"
+
+    post:
+      tags: [Ceremonies]
+      operationId: createCeremony
+      summary: 添加自定义仪式
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CeremonyCreateRequest"
+      responses:
+        "201":
+          description: 仪式创建成功
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Ceremony"
+        "422":
+          $ref: "#/components/responses/ValidationError"
+
+  /sprints/{sprintId}/ceremonies/{ceremonyId}:
+    parameters:
+      - $ref: "#/components/parameters/SprintIdParam"
+      - $ref: "#/components/parameters/CeremonyIdParam"
+
+    put:
+      tags: [Ceremonies]
+      operationId: updateCeremony
+      summary: 编辑仪式配置
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CeremonyUpdateRequest"
+      responses:
+        "200":
+          description: 更新成功
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Ceremony"
+        "404":
+          $ref: "#/components/responses/NotFound"
+        "422":
+          $ref: "#/components/responses/ValidationError"
+
+    delete:
+      tags: [Ceremonies]
+      operationId: deleteCeremony
+      summary: 删除仪式
+      responses:
+        "204":
+          description: 删除成功
+        "404":
+          $ref: "#/components/responses/NotFound"
+
+  /sprints/{sprintId}/ceremonies/{ceremonyId}/mark-done:
+    parameters:
+      - $ref: "#/components/parameters/SprintIdParam"
+      - $ref: "#/components/parameters/CeremonyIdParam"
+    post:
+      tags: [Ceremonies]
+      operationId: markCeremonyDone
+      summary: 标记仪式为已执行
+      description: 用于记录仪式已完成执行，影响提醒状态。
+      responses:
+        "200":
+          description: 标记成功
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Ceremony"
+        "404":
+          $ref: "#/components/responses/NotFound"
+
+  # ── Standups ───────────────────────────────────────────
+  /sprints/{sprintId}/standups:
+    parameters:
+      - $ref: "#/components/parameters/SprintIdParam"
+
+    get:
+      tags: [Standups]
+      operationId: listStandups
+      summary: 获取站会记录列表（按日期分组）
+      parameters:
+        - name: date
+          in: query
+          description: 按日期筛选（YYYY-MM-DD），不传则返回全部
+          schema:
+            type: string
+            format: date
+        - $ref: "#/components/parameters/PageParam"
+        - $ref: "#/components/parameters/PageSizeParam"
+      responses:
+        "200":
+          description: 站会记录列表
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/StandupListResponse"
+
+    post:
+      tags: [Standups]
+      operationId: createStandupEntry
+      summary: 提交一条站会记录
+      description: 为指定参与者提交当日站会三问记录。同一参与者同一日期只能提交一次。
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/StandupEntryCreateRequest"
+      responses:
+        "201":
+          description: 站会记录提交成功
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/StandupEntry"
+        "409":
+          description: 该参与者今日已提交
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "422":
+          $ref: "#/components/responses/ValidationError"
+
+  /sprints/{sprintId}/standups/{standupEntryId}:
+    parameters:
+      - $ref: "#/components/parameters/SprintIdParam"
+      - name: standupEntryId
+        in: path
+        required: true
+        schema:
+          type: string
+
+    put:
+      tags: [Standups]
+      operationId: updateStandupEntry
+      summary: 编辑站会记录
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/StandupEntryUpdateRequest"
+      responses:
+        "200":
+          description: 更新成功
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/StandupEntry"
+        "404":
+          $ref: "#/components/responses/NotFound"
+
+    delete:
+      tags: [Standups]
+      operationId: deleteStandupEntry
+      summary: 删除站会记录
+      responses:
+        "204":
+          description: 删除成功
+        "404":
+          $ref: "#/components/responses/NotFound"
+
+  # ── Reviews ────────────────────────────────────────────
+  /sprints/{sprintId}/reviews:
+    parameters:
+      - $ref: "#/components/parameters/SprintIdParam"
+
+    get:
+      tags: [Reviews]
+      operationId: listReviews
+      summary: 获取 Sprint 评审记录列表
+      responses:
+        "200":
+          description: 评审记录列表
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/ReviewRecord"
+
+    post:
+      tags: [Reviews]
+      operationId: createReview
+      summary: 创建评审记录
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ReviewRecordCreateRequest"
+      responses:
+        "201":
+          description: 评审记录创建成功
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ReviewRecord"
+        "422":
+          $ref: "#/components/responses/ValidationError"
+
+  /sprints/{sprintId}/reviews/{reviewId}:
+    parameters:
+      - $ref: "#/components/parameters/SprintIdParam"
+      - name: reviewId
+        in: path
+        required: true
+        schema:
+          type: string
+
+    get:
+      tags: [Reviews]
+      operationId: getReview
+      summary: 获取评审记录详情
+      responses:
+        "200":
+          description: 评审记录详情
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ReviewRecord"
+        "404":
+          $ref: "#/components/responses/NotFound"
+
+    put:
+      tags: [Reviews]
+      operationId: updateReview
+      summary: 更新评审记录
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ReviewRecordUpdateRequest"
+      responses:
+        "200":
+          description: 更新成功
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ReviewRecord"
+        "404":
+          $ref: "#/components/responses/NotFound"
+
+    delete:
+      tags: [Reviews]
+      operationId: deleteReview
+      summary: 删除评审记录
+      responses:
+        "204":
+          description: 删除成功
+        "404":
+          $ref: "#/components/responses/NotFound"
+
+  # ── Retros ─────────────────────────────────────────────
+  /sprints/{sprintId}/retros:
+    parameters:
+      - $ref: "#/components/parameters/SprintIdParam"
+
+    get:
+      tags: [Retros]
+      operationId: listRetros
+      summary: 获取 Sprint 回顾记录列表
+      responses:
+        "200":
+          description: 回顾记录列表
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/RetroRecord"
+
+    post:
+      tags: [Retros]
+      operationId: createRetro
+      summary: 创建回顾记录
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/RetroRecordCreateRequest"
+      responses:
+        "201":
+          description: 回顾记录创建成功
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/RetroRecord"
+        "422":
+          $ref: "#/components/responses/ValidationError"
+
+  /sprints/{sprintId}/retros/{retroId}:
+    parameters:
+      - $ref: "#/components/parameters/SprintIdParam"
+      - name: retroId
+        in: path
+        required: true
+        schema:
+          type: string
+
+    get:
+      tags: [Retros]
+      operationId: getRetro
+      summary: 获取回顾记录详情
+      responses:
+        "200":
+          description: 回顾记录详情
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/RetroRecord"
+        "404":
+          $ref: "#/components/responses/NotFound"
+
+    put:
+      tags: [Retros]
+      operationId: updateRetro
+      summary: 更新回顾记录
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/RetroRecordUpdateRequest"
+      responses:
+        "200":
+          description: 更新成功
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/RetroRecord"
+        "404":
+          $ref: "#/components/responses/NotFound"
+
+    delete:
+      tags: [Retros]
+      operationId: deleteRetro
+      summary: 删除回顾记录
+      responses:
+        "204":
+          description: 删除成功
+        "404":
+          $ref: "#/components/responses/NotFound"
+
+  /sprints/{sprintId}/retros/{retroId}/items:
+    parameters:
+      - $ref: "#/components/parameters/SprintIdParam"
+      - name: retroId
+        in: path
+        required: true
+        schema:
+          type: string
+
+    post:
+      tags: [Retros]
+      operationId: addRetroItem
+      summary: 向回顾记录中添加条目
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/RetroItemCreateRequest"
+      responses:
+        "201":
+          description: 条目添加成功
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/RetroItem"
+        "422":
+          $ref: "#/components/responses/ValidationError"
+
+  /sprints/{sprintId}/retros/{retroId}/items/{itemId}:
+    parameters:
+      - $ref: "#/components/parameters/SprintIdParam"
+      - name: retroId
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: itemId
+        in: path
+        required: true
+        schema:
+          type: string
+
+    put:
+      tags: [Retros]
+      operationId: updateRetroItem
+      summary: 更新回顾条目
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/RetroItemUpdateRequest"
+      responses:
+        "200":
+          description: 更新成功
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/RetroItem"
+        "404":
+          $ref: "#/components/responses/NotFound"
+
+    delete:
+      tags: [Retros]
+      operationId: deleteRetroItem
+      summary: 删除回顾条目
+      responses:
+        "204":
+          description: 删除成功
+        "404":
+          $ref: "#/components/responses/NotFound"
+
+  /sprints/{sprintId}/retros/{retroId}/items/{itemId}/convert-to-task:
+    parameters:
+      - $ref: "#/components/parameters/SprintIdParam"
+      - name: retroId
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: itemId
+        in: path
+        required: true
+        schema:
+          type: string
+
+    post:
+      tags: [Retros]
+      operationId: convertRetroItemToTask
+      summary: 将行动项转换为任务卡片
+      description: |
+        将回顾行动项一键生成为看板任务，自动出现在 To Do 列。
+        仅 category=action_item 的条目可转换。
+      responses:
+        "201":
+          description: 任务创建成功
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Task"
+        "404":
+          $ref: "#/components/responses/NotFound"
+        "409":
+          description: 该行动项已转换为任务
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "422":
+          description: 非行动项类型，不可转换
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  # ── Action Items (cross-sprint) ────────────────────────
+  /action-items:
+    get:
+      tags: [Retros]
+      operationId: listPendingActionItems
+      summary: 获取所有未完成的回顾行动项
+      description: 跨 Sprint 查询未完成行动项，用于 Dashboard 提醒和下一迭代跟踪。
+      parameters:
+        - name: status
+          in: query
+          schema:
+            type: string
+            enum: [pending, converted, done, all]
+            default: pending
+      responses:
+        "200":
+          description: 行动项列表
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/RetroItem"
+
+  # ── Tasks ──────────────────────────────────────────────
+  /sprints/{sprintId}/tasks:
+    parameters:
+      - $ref: "#/components/parameters/SprintIdParam"
+
+    get:
+      tags: [Tasks]
+      operationId: listTasks
+      summary: 获取当前 Sprint 的任务列表
+      description: 返回归属当前 Sprint 的全部任务，按列分组。
+      parameters:
+        - name: status
+          in: query
+          schema:
+            type: string
+            enum: [todo, in_progress, done]
+          description: 按状态筛选
+      responses:
+        "200":
+          description: 任务列表
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/TaskListResponse"
+
+    post:
+      tags: [Tasks]
+      operationId: createTask
+      summary: 创建任务卡片
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/TaskCreateRequest"
+      responses:
+        "201":
+          description: 任务创建成功
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Task"
+        "422":
+          $ref: "#/components/responses/ValidationError"
+
+  /sprints/{sprintId}/tasks/{taskId}:
+    parameters:
+      - $ref: "#/components/parameters/SprintIdParam"
+      - $ref: "#/components/parameters/TaskIdParam"
+
+    get:
+      tags: [Tasks]
+      operationId: getTask
+      summary: 获取任务详情
+      responses:
+        "200":
+          description: 任务详情
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Task"
+        "404":
+          $ref: "#/components/responses/NotFound"
+
+    put:
+      tags: [Tasks]
+      operationId: updateTask
+      summary: 编辑任务
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/TaskUpdateRequest"
+      responses:
+        "200":
+          description: 更新成功
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Task"
+        "404":
+          $ref: "#/components/responses/NotFound"
+        "422":
+          $ref: "#/components/responses/ValidationError"
+
+    delete:
+      tags: [Tasks]
+      operationId: deleteTask
+      summary: 删除任务
+      responses:
+        "204":
+          description: 删除成功
+        "404":
+          $ref: "#/components/responses/NotFound"
+
+  /sprints/{sprintId}/tasks/{taskId}/move:
+    parameters:
+      - $ref: "#/components/parameters/SprintIdParam"
+      - $ref: "#/components/parameters/TaskIdParam"
+
+    patch:
+      tags: [Tasks]
+      operationId: moveTask
+      summary: 移动任务到目标列（拖拽）
+      description: |
+        看板拖拽操作的后端接口。支持乐观更新：
+        前端先渲染，后端异步确认。失败时前端回滚。
+        可同时调整列内排序。
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/TaskMoveRequest"
+      responses:
+        "200":
+          description: 移动成功
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Task"
+        "404":
+          $ref: "#/components/responses/NotFound"
+        "422":
+          $ref: "#/components/responses/ValidationError"
+
+  # ── Participants ───────────────────────────────────────
+  /participants:
+    get:
+      tags: [Participants]
+      operationId: listParticipants
+      summary: 获取所有参与者名称列表
+      description: 返回系统中使用过的所有参与者名称，用于名称自动补全。
+      responses:
+        "200":
+          description: 参与者列表
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      type: string
+                    example: ["Alice", "Bob", "Charlie"]
+
+# ── Components ─────────────────────────────────────────
+components:
+  parameters:
+    SprintIdParam:
+      name: sprintId
+      in: path
+      required: true
+      schema:
+        type: string
+      description: Sprint 唯一标识
+
+    CeremonyIdParam:
+      name: ceremonyId
+      in: path
+      required: true
+      schema:
+        type: string
+      description: 仪式唯一标识
+
+    TaskIdParam:
+      name: taskId
+      in: path
+      required: true
+      schema:
+        type: string
+      description: 任务唯一标识
+
+    PageParam:
+      name: page
+      in: query
+      schema:
+        type: integer
+        minimum: 1
+        default: 1
+
+    PageSizeParam:
+      name: pageSize
+      in: query
+      schema:
+        type: integer
+        minimum: 1
+        maximum: 100
+        default: 20
+
+  responses:
+    NotFound:
+      description: 资源不存在
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/ErrorResponse"
+
+    ValidationError:
+      description: 请求参数校验失败
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/ValidationErrorResponse"
+
+  schemas:
+    # ── Common ──────────────────────────────────────
+    ErrorResponse:
+      type: object
+      required: [error]
+      properties:
+        error:
+          type: object
+          required: [code, message]
+          properties:
+            code:
+              type: string
+              example: "ACTIVE_SPRINT_EXISTS"
+            message:
+              type: string
+              example: "已存在活跃的 Sprint，请先归档当前迭代"
+
+    ValidationErrorResponse:
+      type: object
+      required: [error]
+      properties:
+        error:
+          type: object
+          required: [code, message, details]
+          properties:
+            code:
+              type: string
+              example: "VALIDATION_ERROR"
+            message:
+              type: string
+              example: "请求参数校验失败"
+            details:
+              type: array
+              items:
+                type: object
+                properties:
+                  field:
+                    type: string
+                    example: "name"
+                  message:
+                    type: string
+                    example: "名称为必填项"
+
+    PaginationMeta:
+      type: object
+      properties:
+        page:
+          type: integer
+        pageSize:
+          type: integer
+        total:
+          type: integer
+        totalPages:
+          type: integer
+
+    # ── Sprint ──────────────────────────────────────
+    Sprint:
+      type: object
+      required: [id, name, startDate, endDate, status, createdAt, updatedAt]
+      properties:
+        id:
+          type: string
+          format: uuid
+        name:
+          type: string
+          maxLength: 50
+          example: "Sprint 1 - 用户注册"
+        goal:
+          type: string
+          description: 迭代目标描述
+          example: "完成用户注册和登录模块"
+        startDate:
+          type: string
+          format: date
+          example: "2026-03-20"
+        endDate:
+          type: string
+          format: date
+          example: "2026-04-02"
+        status:
+          type: string
+          enum: [active, archived]
+        daysRemaining:
+          type: integer
+          description: 剩余天数（仅活跃 Sprint）
+          example: 10
+        progressPercent:
+          type: number
+          format: float
+          description: 进度百分比（已过天数 / 总天数）
+          example: 35.5
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+
+    SprintCreateRequest:
+      type: object
+      required: [name, startDate, endDate]
+      properties:
+        name:
+          type: string
+          minLength: 1
+          maxLength: 50
+        goal:
+          type: string
+        startDate:
+          type: string
+          format: date
+        endDate:
+          type: string
+          format: date
+
+    SprintUpdateRequest:
+      type: object
+      properties:
+        name:
+          type: string
+          minLength: 1
+          maxLength: 50
+        goal:
+          type: string
+        startDate:
+          type: string
+          format: date
+        endDate:
+          type: string
+          format: date
+
+    SprintListResponse:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            $ref: "#/components/schemas/Sprint"
+        pagination:
+          $ref: "#/components/schemas/PaginationMeta"
+
+    # ── Ceremony ────────────────────────────────────
+    Ceremony:
+      type: object
+      required: [id, sprintId, type, name, frequency, status, createdAt]
+      properties:
+        id:
+          type: string
+          format: uuid
+        sprintId:
+          type: string
+          format: uuid
+        type:
+          type: string
+          enum: [standup, review, retro, planning, custom]
+        name:
+          type: string
+          example: "每日站会"
+        frequency:
+          type: string
+          enum: [daily, once]
+        scheduledAt:
+          type: string
+          format: date-time
+          description: 预定日期时间（frequency=once 时为具体时间，daily 时为每日时间）
+        scheduledTime:
+          type: string
+          pattern: "^\\d{2}:\\d{2}$"
+          description: 每日仪式的时间 (HH:mm)
+          example: "09:30"
+        status:
+          type: string
+          enum: [pending, done]
+          description: 执行状态
+        isOverdue:
+          type: boolean
+          description: 是否过期未执行
+        createdAt:
+          type: string
+          format: date-time
+
+    CeremonyCreateRequest:
+      type: object
+      required: [type, name, frequency]
+      properties:
+        type:
+          type: string
+          enum: [standup, review, retro, planning, custom]
+        name:
+          type: string
+          maxLength: 50
+        frequency:
+          type: string
+          enum: [daily, once]
+        scheduledAt:
+          type: string
+          format: date-time
+        scheduledTime:
+          type: string
+          pattern: "^\\d{2}:\\d{2}$"
+
+    CeremonyUpdateRequest:
+      type: object
+      properties:
+        name:
+          type: string
+          maxLength: 50
+        frequency:
+          type: string
+          enum: [daily, once]
+        scheduledAt:
+          type: string
+          format: date-time
+        scheduledTime:
+          type: string
+          pattern: "^\\d{2}:\\d{2}$"
+
+    # ── Standup ─────────────────────────────────────
+    StandupEntry:
+      type: object
+      required: [id, sprintId, participant, date, yesterday, today, blockers, createdAt]
+      properties:
+        id:
+          type: string
+          format: uuid
+        sprintId:
+          type: string
+          format: uuid
+        participant:
+          type: string
+          example: "Alice"
+        date:
+          type: string
+          format: date
+          example: "2026-03-20"
+        yesterday:
+          type: string
+          description: 昨天做了什么
+          example: "完成了登录页面 UI"
+        today:
+          type: string
+          description: 今天计划做什么
+          example: "开始注册功能后端 API"
+        blockers:
+          type: string
+          description: 阻塞事项
+          example: "等待设计稿确认"
+        createdAt:
+          type: string
+          format: date-time
+
+    StandupEntryCreateRequest:
+      type: object
+      required: [participant, yesterday, today]
+      properties:
+        participant:
+          type: string
+          minLength: 1
+        date:
+          type: string
+          format: date
+          description: 站会日期，默认今日
+        yesterday:
+          type: string
+          minLength: 1
+        today:
+          type: string
+          minLength: 1
+        blockers:
+          type: string
+          default: ""
+
+    StandupEntryUpdateRequest:
+      type: object
+      properties:
+        yesterday:
+          type: string
+        today:
+          type: string
+        blockers:
+          type: string
+
+    StandupDay:
+      type: object
+      properties:
+        date:
+          type: string
+          format: date
+        entries:
+          type: array
+          items:
+            $ref: "#/components/schemas/StandupEntry"
+
+    StandupListResponse:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            $ref: "#/components/schemas/StandupDay"
+        pagination:
+          $ref: "#/components/schemas/PaginationMeta"
+
+    # ── Review ──────────────────────────────────────
+    ReviewRecord:
+      type: object
+      required: [id, sprintId, demoItems, decisions, createdAt]
+      properties:
+        id:
+          type: string
+          format: uuid
+        sprintId:
+          type: string
+          format: uuid
+        demoItems:
+          type: array
+          items:
+            $ref: "#/components/schemas/DemoItem"
+        decisions:
+          type: string
+          description: 决策结论
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+
+    DemoItem:
+      type: object
+      required: [id, description]
+      properties:
+        id:
+          type: string
+          format: uuid
+        description:
+          type: string
+          example: "演示用户注册流程"
+        feedbacks:
+          type: array
+          items:
+            $ref: "#/components/schemas/Feedback"
+
+    Feedback:
+      type: object
+      required: [id, content]
+      properties:
+        id:
+          type: string
+          format: uuid
+        content:
+          type: string
+          example: "注册流程需要增加邮箱验证步骤"
+
+    ReviewRecordCreateRequest:
+      type: object
+      properties:
+        demoItems:
+          type: array
+          items:
+            type: object
+            required: [description]
+            properties:
+              description:
+                type: string
+              feedbacks:
+                type: array
+                items:
+                  type: object
+                  required: [content]
+                  properties:
+                    content:
+                      type: string
+        decisions:
+          type: string
+
+    ReviewRecordUpdateRequest:
+      type: object
+      properties:
+        demoItems:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: string
+                description: 已有条目的 ID，新增条目不传
+              description:
+                type: string
+              feedbacks:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: string
+                    content:
+                      type: string
+        decisions:
+          type: string
+
+    # ── Retro ───────────────────────────────────────
+    RetroRecord:
+      type: object
+      required: [id, sprintId, items, createdAt]
+      properties:
+        id:
+          type: string
+          format: uuid
+        sprintId:
+          type: string
+          format: uuid
+        items:
+          type: array
+          items:
+            $ref: "#/components/schemas/RetroItem"
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+
+    RetroItem:
+      type: object
+      required: [id, category, content, status]
+      properties:
+        id:
+          type: string
+          format: uuid
+        retroId:
+          type: string
+          format: uuid
+        sprintId:
+          type: string
+          format: uuid
+        category:
+          type: string
+          enum: [went_well, needs_improvement, action_item]
+        content:
+          type: string
+          example: "代码评审流程很有效"
+        status:
+          type: string
+          enum: [pending, converted, done]
+          description: 行动项跟踪状态（仅 action_item 类别有意义）
+        convertedTaskId:
+          type: string
+          format: uuid
+          description: 转换生成的任务 ID（仅 converted 状态）
+        createdAt:
+          type: string
+          format: date-time
+
+    RetroRecordCreateRequest:
+      type: object
+      properties:
+        items:
+          type: array
+          items:
+            $ref: "#/components/schemas/RetroItemCreateRequest"
+
+    RetroRecordUpdateRequest:
+      type: object
+      properties:
+        items:
+          type: array
+          description: 完整替换条目列表
+          items:
+            type: object
+            properties:
+              id:
+                type: string
+              category:
+                type: string
+                enum: [went_well, needs_improvement, action_item]
+              content:
+                type: string
+
+    RetroItemCreateRequest:
+      type: object
+      required: [category, content]
+      properties:
+        category:
+          type: string
+          enum: [went_well, needs_improvement, action_item]
+        content:
+          type: string
+          minLength: 1
+
+    RetroItemUpdateRequest:
+      type: object
+      properties:
+        content:
+          type: string
+        status:
+          type: string
+          enum: [pending, converted, done]
+
+    # ── Task ────────────────────────────────────────
+    Task:
+      type: object
+      required: [id, sprintId, title, status, position, createdAt]
+      properties:
+        id:
+          type: string
+          format: uuid
+        sprintId:
+          type: string
+          format: uuid
+        title:
+          type: string
+          maxLength: 100
+          example: "实现用户注册 API"
+        description:
+          type: string
+          example: "包含邮箱验证和密码加密"
+        assignee:
+          type: string
+          description: 负责人名称
+          example: "Bob"
+        status:
+          type: string
+          enum: [todo, in_progress, done]
+        position:
+          type: integer
+          description: 列内排序位置
+        sourceType:
+          type: string
+          enum: [manual, action_item]
+          description: 来源类型（手动创建 / 行动项转换）
+        sourceRetroItemId:
+          type: string
+          format: uuid
+          description: 来源行动项 ID（仅 action_item 来源）
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+
+    TaskCreateRequest:
+      type: object
+      required: [title]
+      properties:
+        title:
+          type: string
+          minLength: 1
+          maxLength: 100
+        description:
+          type: string
+        assignee:
+          type: string
+
+    TaskUpdateRequest:
+      type: object
+      properties:
+        title:
+          type: string
+          minLength: 1
+          maxLength: 100
+        description:
+          type: string
+        assignee:
+          type: string
+
+    TaskMoveRequest:
+      type: object
+      required: [status]
+      properties:
+        status:
+          type: string
+          enum: [todo, in_progress, done]
+          description: 目标列状态
+        position:
+          type: integer
+          minimum: 0
+          description: 目标列内排序位置
+
+    TaskListResponse:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            $ref: "#/components/schemas/Task"
+        stats:
+          $ref: "#/components/schemas/TaskStats"
+
+    TaskStats:
+      type: object
+      properties:
+        todo:
+          type: integer
+        inProgress:
+          type: integer
+        done:
+          type: integer
+        total:
+          type: integer
+
+    # ── Dashboard ───────────────────────────────────
+    DashboardResponse:
+      type: object
+      properties:
+        activeSprint:
+          $ref: "#/components/schemas/Sprint"
+        upcomingCeremonies:
+          type: array
+          description: 未来 3 天的仪式列表
+          items:
+            $ref: "#/components/schemas/Ceremony"
+        todayCeremonies:
+          type: array
+          description: 今日待执行仪式（用于 banner 提醒）
+          items:
+            $ref: "#/components/schemas/Ceremony"
+        overdueCeremonies:
+          type: array
+          description: 过期未执行仪式
+          items:
+            $ref: "#/components/schemas/Ceremony"
+        taskStats:
+          $ref: "#/components/schemas/TaskStats"
+        pendingActionItems:
+          type: array
+          description: 未完成的回顾行动项
+          items:
+            $ref: "#/components/schemas/RetroItem"
