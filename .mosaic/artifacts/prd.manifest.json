@@ -1,0 +1,63 @@
+{
+  "features": [
+    {
+      "id": "F-001",
+      "name": "sprint-crud"
+    },
+    {
+      "id": "F-002",
+      "name": "ceremony-config"
+    },
+    {
+      "id": "F-003",
+      "name": "standup-record"
+    },
+    {
+      "id": "F-004",
+      "name": "review-record"
+    },
+    {
+      "id": "F-005",
+      "name": "retro-record"
+    },
+    {
+      "id": "F-006",
+      "name": "planning-record"
+    },
+    {
+      "id": "F-007",
+      "name": "task-board"
+    },
+    {
+      "id": "F-008",
+      "name": "dashboard"
+    },
+    {
+      "id": "F-009",
+      "name": "ceremony-reminder"
+    },
+    {
+      "id": "F-010",
+      "name": "data-persistence"
+    }
+  ],
+  "constraints": [
+    "单团队模式，无用户认证，打开浏览器即可使用",
+    "Web 应用，前后端分离：React + Tailwind CSS 前端，Node.js + SQLite 后端",
+    "界面移动端友好（响应式布局），站会记录页面移动端优先",
+    "同一时间只允许一个活跃 Sprint",
+    "成员身份通过昵称标识，不做账号体系",
+    "SQLite 单文件数据库，零配置部署",
+    "看板拖拽使用成熟拖拽库（dnd-kit 或 @hello-pangea/dnd）"
+  ],
+  "out_of_scope": [
+    "用户认证与权限管理",
+    "多团队 / 多工作空间支持",
+    "外部通知集成（Slack、邮件、Webhook）",
+    "燃尽图、速率图等高级统计报表",
+    "与外部工具集成（Jira、GitHub、Trello）",
+    "WebSocket 实时多人协作同步",
+    "国际化 / 多语言支持",
+    "Sprint Backlog 梳理与 Story Point 估算"
+  ]
+}
