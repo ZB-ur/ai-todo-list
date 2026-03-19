@@ -1,0 +1,33 @@
+{
+  "features": [
+    "F-BASIC-CALC",
+    "F-SCI-TRIG",
+    "F-SCI-LOG",
+    "F-SCI-CONST",
+    "F-EXPR-DISPLAY",
+    "F-PORTRAIT-LAYOUT",
+    "F-LANDSCAPE-LAYOUT",
+    "F-NEUMORPHIC-UI",
+    "F-DEG-RAD"
+  ],
+  "constraints": [
+    "Target platforms: iOS and Android mobile",
+    "Deliverables: UI design mockups + API spec only, no code implementation",
+    "Neumorphism/3D skeuomorphic style with light color scheme",
+    "All UI elements must meet WCAG AA contrast ratios",
+    "Expression parser API must support operator precedence and nested parentheses",
+    "Landscape layout must have clear key zones: digits, operators, scientific functions"
+  ],
+  "out_of_scope": [
+    "Calculation history",
+    "Unit conversion",
+    "Graph plotting",
+    "Formula editor / Math Notes",
+    "Cloud sync",
+    "Theme switching / dark mode",
+    "RPN mode",
+    "Advanced math: matrices, calculus, statistics",
+    "Apple Watch / tablet-specific layouts",
+    "Code implementation"
+  ]
+}
