@@ -1,0 +1,121 @@
+{
+  "flows": [
+    {
+      "name": "sprint-lifecycle",
+      "covers_features": [
+        "F-001",
+        "F-007"
+      ]
+    },
+    {
+      "name": "ceremony-setup",
+      "covers_features": [
+        "F-002",
+        "F-008"
+      ]
+    },
+    {
+      "name": "standup-flow",
+      "covers_features": [
+        "F-003",
+        "F-009"
+      ]
+    },
+    {
+      "name": "review-flow",
+      "covers_features": [
+        "F-004"
+      ]
+    },
+    {
+      "name": "retro-flow",
+      "covers_features": [
+        "F-005",
+        "F-006"
+      ]
+    },
+    {
+      "name": "kanban-flow",
+      "covers_features": [
+        "F-006",
+        "F-009"
+      ]
+    },
+    {
+      "name": "member-flow",
+      "covers_features": [
+        "F-009"
+      ]
+    },
+    {
+      "name": "dashboard-flow",
+      "covers_features": [
+        "F-007",
+        "F-008"
+      ]
+    }
+  ],
+  "components": [
+    "AppShell",
+    "Sidebar",
+    "BottomNav",
+    "PageHeader",
+    "DashboardPage",
+    "SprintProgressCard",
+    "TodayCeremonyCard",
+    "CeremonyReminderBanner",
+    "UnfinishedTasksCard",
+    "RecentRecordsCard",
+    "SprintListPage",
+    "SprintFormModal",
+    "SprintDetailPage",
+    "CeremonyConfigPanel",
+    "CeremonyFormModal",
+    "CeremonyList",
+    "StandupRecordPage",
+    "StandupMemberForm",
+    "StandupHistoryList",
+    "BlockerHighlight",
+    "ReviewRecordPage",
+    "FeedbackItem",
+    "DecisionItem",
+    "RetroRecordPage",
+    "RetroColumn",
+    "ActionItemForm",
+    "TaskBoardPage",
+    "KanbanColumn",
+    "TaskCard",
+    "TaskFormModal",
+    "TaskDetailDrawer",
+    "MemberListPage",
+    "MemberFormModal",
+    "MemberAvatar",
+    "MemberSelect",
+    "ConfirmDialog",
+    "Toast",
+    "Skeleton",
+    "EmptyState",
+    "ProgressBar",
+    "CountdownBadge",
+    "DatePicker",
+    "Modal",
+    "Drawer",
+    "StatusBadge"
+  ],
+  "interaction_rules": [
+    "field-blur-validation-plus-submit-validation",
+    "inline-field-error-with-red-border",
+    "global-toast-notification-5s-auto-dismiss",
+    "skeleton-loading-for-pages",
+    "spinner-button-disable-on-submit",
+    "optimistic-update-for-drag-drop-with-rollback",
+    "confirm-dialog-for-destructive-actions",
+    "responsive-breakpoints-768-1024",
+    "mobile-bottom-nav-desktop-sidebar",
+    "empty-state-with-guidance-cta",
+    "ceremony-reminder-banner-30min-before",
+    "ceremony-polling-60s-interval",
+    "single-active-sprint-enforcement",
+    "mobile-first-standup-input"
+  ]
+}

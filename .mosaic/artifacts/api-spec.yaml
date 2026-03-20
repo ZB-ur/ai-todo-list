@@ -1,0 +1,1668 @@
+openapi: "3.0.3"
+info:
+  title: Agile Sprint Manager API
+  description: >
+    RESTful API for a lightweight agile iteration management system
+    designed for small startup teams (3-10 people). Covers sprint lifecycle,
+    ceremony scheduling & recording, task kanban board, and team member management.
+  version: "1.0.0"
+
+servers:
+  - url: /api/v1
+    description: Local development server
+
+tags:
+  - name: Dashboard
+    description: Aggregated dashboard data
+  - name: Sprints
+    description: Sprint lifecycle management
+  - name: Ceremonies
+    description: Ceremony configuration and scheduling
+  - name: Standups
+    description: Daily standup records
+  - name: Reviews
+    description: Sprint review records
+  - name: Retros
+    description: Sprint retrospective records
+  - name: Tasks
+    description: Task kanban board
+  - name: Members
+    description: Team member label management
+
+paths:
+  # ── Dashboard ──────────────────────────────────────────────
+  /dashboard:
+    get:
+      operationId: getDashboard
+      tags: [Dashboard]
+      summary: Get dashboard overview
+      description: >
+        Returns aggregated dashboard data including active sprint progress,
+        today's ceremonies, upcoming ceremony countdowns, unfinished tasks,
+        and recent ceremony record summaries.
+      responses:
+        "200":
+          description: Dashboard data
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DashboardResponse"
+
+  # ── Sprints ────────────────────────────────────────────────
+  /sprints:
+    get:
+      operationId: listSprints
+      tags: [Sprints]
+      summary: List all sprints
+      description: Returns all sprints ordered by start date descending, including archived ones.
+      parameters:
+        - name: status
+          in: query
+          schema:
+            type: string
+            enum: [active, completed, all]
+            default: all
+          description: Filter by sprint status
+      responses:
+        "200":
+          description: Sprint list
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [data]
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/Sprint"
+
+    post:
+      operationId: createSprint
+      tags: [Sprints]
+      summary: Create a new sprint
+      description: >
+        Creates a new sprint. Fails if there is already an active sprint.
+        Sprint name must be unique.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/SprintCreateRequest"
+      responses:
+        "201":
+          description: Sprint created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Sprint"
+        "409":
+          description: Active sprint already exists or name is duplicate
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "422":
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ValidationErrorResponse"
+
+  /sprints/active:
+    get:
+      operationId: getActiveSprint
+      tags: [Sprints]
+      summary: Get the currently active sprint
+      description: Returns the single active sprint, or 404 if none exists.
+      responses:
+        "200":
+          description: Active sprint
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Sprint"
+        "404":
+          description: No active sprint
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /sprints/name-check:
+    get:
+      operationId: checkSprintName
+      tags: [Sprints]
+      summary: Check if a sprint name is available
+      description: Used for async duplicate validation on field blur.
+      parameters:
+        - name: name
+          in: query
+          required: true
+          schema:
+            type: string
+        - name: excludeId
+          in: query
+          schema:
+            type: string
+          description: Sprint ID to exclude (for edit mode)
+      responses:
+        "200":
+          description: Name availability result
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [available]
+                properties:
+                  available:
+                    type: boolean
+
+  /sprints/{sprintId}:
+    parameters:
+      - $ref: "#/components/parameters/SprintId"
+    get:
+      operationId: getSprint
+      tags: [Sprints]
+      summary: Get sprint detail
+      description: Returns sprint details including task statistics.
+      responses:
+        "200":
+          description: Sprint detail
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SprintDetail"
+        "404":
+          description: Sprint not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+    put:
+      operationId: updateSprint
+      tags: [Sprints]
+      summary: Update a sprint
+      description: Update sprint name, dates, or goal. Completed sprints cannot be updated.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/SprintUpdateRequest"
+      responses:
+        "200":
+          description: Sprint updated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Sprint"
+        "404":
+          description: Sprint not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "409":
+          description: Sprint name duplicate
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "422":
+          description: Validation error or sprint is completed
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ValidationErrorResponse"
+    delete:
+      operationId: deleteSprint
+      tags: [Sprints]
+      summary: Delete a sprint
+      description: >
+        Deletes a sprint and all associated data (ceremonies, records, tasks).
+        Frontend must show confirmation dialog with impact counts before calling.
+      responses:
+        "200":
+          description: Sprint deleted with impact summary
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [deleted]
+                properties:
+                  deleted:
+                    type: object
+                    properties:
+                      ceremonies:
+                        type: integer
+                      tasks:
+                        type: integer
+                      standupRecords:
+                        type: integer
+                      reviewRecords:
+                        type: integer
+                      retroRecords:
+                        type: integer
+        "404":
+          description: Sprint not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /sprints/{sprintId}/complete:
+    parameters:
+      - $ref: "#/components/parameters/SprintId"
+    post:
+      operationId: completeSprint
+      tags: [Sprints]
+      summary: Complete (archive) a sprint
+      description: >
+        Marks the active sprint as completed. Returns count of unfinished tasks.
+        Only active sprints can be completed.
+      responses:
+        "200":
+          description: Sprint completed
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [sprint, unfinishedTaskCount]
+                properties:
+                  sprint:
+                    $ref: "#/components/schemas/Sprint"
+                  unfinishedTaskCount:
+                    type: integer
+                    description: Number of tasks not in Done status
+        "404":
+          description: Sprint not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "422":
+          description: Sprint is not active
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /sprints/{sprintId}/delete-impact:
+    parameters:
+      - $ref: "#/components/parameters/SprintId"
+    get:
+      operationId: getSprintDeleteImpact
+      tags: [Sprints]
+      summary: Get delete impact counts
+      description: Returns counts of associated records that will be deleted, for the confirmation dialog.
+      responses:
+        "200":
+          description: Impact summary
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [ceremonies, tasks, standupRecords, reviewRecords, retroRecords]
+                properties:
+                  ceremonies:
+                    type: integer
+                  tasks:
+                    type: integer
+                  standupRecords:
+                    type: integer
+                  reviewRecords:
+                    type: integer
+                  retroRecords:
+                    type: integer
+        "404":
+          description: Sprint not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  # ── Ceremonies ─────────────────────────────────────────────
+  /sprints/{sprintId}/ceremonies:
+    parameters:
+      - $ref: "#/components/parameters/SprintId"
+    get:
+      operationId: listCeremonies
+      tags: [Ceremonies]
+      summary: List ceremonies for a sprint
+      description: Returns all ceremony configurations for the given sprint, with status indicators.
+      responses:
+        "200":
+          description: Ceremony list
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [data]
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/Ceremony"
+    post:
+      operationId: createCeremony
+      tags: [Ceremonies]
+      summary: Create a ceremony for a sprint
+      description: >
+        Adds a ceremony configuration. For daily frequency, occurrences are
+        auto-generated for each day within the sprint date range.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CeremonyCreateRequest"
+      responses:
+        "201":
+          description: Ceremony created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Ceremony"
+        "422":
+          description: Validation error (e.g., date outside sprint range)
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ValidationErrorResponse"
+
+  /sprints/{sprintId}/ceremonies/defaults:
+    parameters:
+      - $ref: "#/components/parameters/SprintId"
+    post:
+      operationId: initDefaultCeremonies
+      tags: [Ceremonies]
+      summary: Initialize default ceremonies for a sprint
+      description: >
+        Creates the four default ceremonies (Daily Standup, Planning, Review, Retro)
+        with sensible defaults. Idempotent — skips already existing types.
+      responses:
+        "200":
+          description: Default ceremonies created
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [data]
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/Ceremony"
+
+  /ceremonies/{ceremonyId}:
+    parameters:
+      - $ref: "#/components/parameters/CeremonyId"
+    get:
+      operationId: getCeremony
+      tags: [Ceremonies]
+      summary: Get ceremony detail
+      responses:
+        "200":
+          description: Ceremony detail
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Ceremony"
+        "404":
+          description: Ceremony not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+    put:
+      operationId: updateCeremony
+      tags: [Ceremonies]
+      summary: Update a ceremony
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CeremonyUpdateRequest"
+      responses:
+        "200":
+          description: Ceremony updated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Ceremony"
+        "404":
+          description: Ceremony not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "422":
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ValidationErrorResponse"
+    delete:
+      operationId: deleteCeremony
+      tags: [Ceremonies]
+      summary: Delete a ceremony
+      responses:
+        "204":
+          description: Ceremony deleted
+        "404":
+          description: Ceremony not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /ceremonies/upcoming:
+    get:
+      operationId: getUpcomingCeremonies
+      tags: [Ceremonies]
+      summary: Get upcoming ceremonies with reminder status
+      description: >
+        Returns ceremonies happening within the next 24 hours for the active sprint.
+        Includes countdown and status (upcoming / imminent / in_progress / overdue_unrecorded).
+        Used by dashboard and reminder banner. Polled every 60 seconds.
+      responses:
+        "200":
+          description: Upcoming ceremonies
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [data]
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/UpcomingCeremony"
+
+  # ── Standup Records ────────────────────────────────────────
+  /sprints/{sprintId}/standups:
+    parameters:
+      - $ref: "#/components/parameters/SprintId"
+    get:
+      operationId: listStandups
+      tags: [Standups]
+      summary: List standup records for a sprint
+      description: Returns standup records grouped by date, ordered descending.
+      parameters:
+        - name: date
+          in: query
+          schema:
+            type: string
+            format: date
+          description: Filter by specific date (YYYY-MM-DD)
+      responses:
+        "200":
+          description: Standup records
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [data]
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/StandupDay"
+
+  /sprints/{sprintId}/standups/{date}:
+    parameters:
+      - $ref: "#/components/parameters/SprintId"
+      - name: date
+        in: path
+        required: true
+        schema:
+          type: string
+          format: date
+        description: Standup date (YYYY-MM-DD)
+    get:
+      operationId: getStandupByDate
+      tags: [Standups]
+      summary: Get standup records for a specific date
+      description: Returns all member entries for the given date, marking members who have not submitted.
+      responses:
+        "200":
+          description: Standup day detail
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/StandupDay"
+    put:
+      operationId: upsertStandupEntries
+      tags: [Standups]
+      summary: Create or update standup entries for a date
+      description: >
+        Upserts standup entries for one or more members on the given date.
+        If an entry already exists for a member on this date, it is updated (not duplicated).
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/StandupUpsertRequest"
+      responses:
+        "200":
+          description: Standup entries saved
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/StandupDay"
+        "422":
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ValidationErrorResponse"
+
+  # ── Review Records ─────────────────────────────────────────
+  /sprints/{sprintId}/review:
+    parameters:
+      - $ref: "#/components/parameters/SprintId"
+    get:
+      operationId: getReviewRecord
+      tags: [Reviews]
+      summary: Get sprint review record
+      description: Returns the review record for the sprint, or 404 if not yet created.
+      responses:
+        "200":
+          description: Review record
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ReviewRecord"
+        "404":
+          description: No review record yet
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+    put:
+      operationId: upsertReviewRecord
+      tags: [Reviews]
+      summary: Create or update the sprint review record
+      description: Upserts the review record (conclusion, feedback items, decision items).
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ReviewRecordRequest"
+      responses:
+        "200":
+          description: Review record saved
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ReviewRecord"
+        "422":
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ValidationErrorResponse"
+
+  # ── Retro Records ──────────────────────────────────────────
+  /sprints/{sprintId}/retro:
+    parameters:
+      - $ref: "#/components/parameters/SprintId"
+    get:
+      operationId: getRetroRecord
+      tags: [Retros]
+      summary: Get sprint retrospective record
+      description: Returns the retro record for the sprint, or 404 if not yet created.
+      responses:
+        "200":
+          description: Retro record
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/RetroRecord"
+        "404":
+          description: No retro record yet
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+    put:
+      operationId: upsertRetroRecord
+      tags: [Retros]
+      summary: Create or update the sprint retro record
+      description: >
+        Upserts the retro record. Action items with convertToTask=true will be
+        automatically created as tasks in the next sprint's To Do column.
+        If no next sprint exists, they are stored as pending and auto-imported
+        when a new sprint is created.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/RetroRecordRequest"
+      responses:
+        "200":
+          description: Retro record saved
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/RetroRecord"
+        "422":
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ValidationErrorResponse"
+
+  # ── Tasks ──────────────────────────────────────────────────
+  /sprints/{sprintId}/tasks:
+    parameters:
+      - $ref: "#/components/parameters/SprintId"
+    get:
+      operationId: listTasks
+      tags: [Tasks]
+      summary: List tasks for a sprint
+      description: Returns tasks grouped by status column (todo, in_progress, done).
+      responses:
+        "200":
+          description: Tasks grouped by status
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/TaskBoardResponse"
+    post:
+      operationId: createTask
+      tags: [Tasks]
+      summary: Create a task
+      description: Creates a new task in the To Do column of the given sprint.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/TaskCreateRequest"
+      responses:
+        "201":
+          description: Task created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Task"
+        "422":
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ValidationErrorResponse"
+
+  /tasks/{taskId}:
+    parameters:
+      - $ref: "#/components/parameters/TaskId"
+    get:
+      operationId: getTask
+      tags: [Tasks]
+      summary: Get task detail
+      responses:
+        "200":
+          description: Task detail
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Task"
+        "404":
+          description: Task not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+    put:
+      operationId: updateTask
+      tags: [Tasks]
+      summary: Update a task
+      description: Update task title, description, or assignee.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/TaskUpdateRequest"
+      responses:
+        "200":
+          description: Task updated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Task"
+        "404":
+          description: Task not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "422":
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ValidationErrorResponse"
+    delete:
+      operationId: deleteTask
+      tags: [Tasks]
+      summary: Delete a task
+      responses:
+        "204":
+          description: Task deleted
+        "404":
+          description: Task not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /tasks/{taskId}/status:
+    parameters:
+      - $ref: "#/components/parameters/TaskId"
+    patch:
+      operationId: updateTaskStatus
+      tags: [Tasks]
+      summary: Move a task to a different column
+      description: >
+        Updates task status (drag-and-drop or mobile "move to next column").
+        Supports optimistic UI — frontend updates immediately, rolls back on error.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [status]
+              properties:
+                status:
+                  $ref: "#/components/schemas/TaskStatus"
+                sortOrder:
+                  type: integer
+                  description: Position within the target column (for drag ordering)
+      responses:
+        "200":
+          description: Task status updated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Task"
+        "404":
+          description: Task not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "422":
+          description: Invalid status transition
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /tasks/reorder:
+    patch:
+      operationId: reorderTasks
+      tags: [Tasks]
+      summary: Batch update task sort order
+      description: Updates sort order for multiple tasks after a drag-and-drop operation.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [tasks]
+              properties:
+                tasks:
+                  type: array
+                  items:
+                    type: object
+                    required: [id, status, sortOrder]
+                    properties:
+                      id:
+                        type: string
+                      status:
+                        $ref: "#/components/schemas/TaskStatus"
+                      sortOrder:
+                        type: integer
+      responses:
+        "200":
+          description: Tasks reordered
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  updated:
+                    type: integer
+
+  # ── Members ────────────────────────────────────────────────
+  /members:
+    get:
+      operationId: listMembers
+      tags: [Members]
+      summary: List all team members
+      responses:
+        "200":
+          description: Member list
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [data]
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/Member"
+    post:
+      operationId: createMember
+      tags: [Members]
+      summary: Add a team member
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/MemberCreateRequest"
+      responses:
+        "201":
+          description: Member created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Member"
+        "422":
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ValidationErrorResponse"
+
+  /members/{memberId}:
+    parameters:
+      - $ref: "#/components/parameters/MemberId"
+    get:
+      operationId: getMember
+      tags: [Members]
+      summary: Get member detail
+      responses:
+        "200":
+          description: Member detail
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Member"
+        "404":
+          description: Member not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+    put:
+      operationId: updateMember
+      tags: [Members]
+      summary: Update a member
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/MemberUpdateRequest"
+      responses:
+        "200":
+          description: Member updated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Member"
+        "404":
+          description: Member not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+    delete:
+      operationId: deleteMember
+      tags: [Members]
+      summary: Delete a member
+      description: >
+        Deletes a member. Existing records (standup entries, task assignments)
+        retain the member name as a snapshot. Frontend must show confirmation dialog.
+      responses:
+        "204":
+          description: Member deleted
+        "404":
+          description: Member not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+components:
+  parameters:
+    SprintId:
+      name: sprintId
+      in: path
+      required: true
+      schema:
+        type: string
+      description: Sprint unique identifier
+    CeremonyId:
+      name: ceremonyId
+      in: path
+      required: true
+      schema:
+        type: string
+      description: Ceremony unique identifier
+    TaskId:
+      name: taskId
+      in: path
+      required: true
+      schema:
+        type: string
+      description: Task unique identifier
+    MemberId:
+      name: memberId
+      in: path
+      required: true
+      schema:
+        type: string
+      description: Member unique identifier
+
+  schemas:
+    # ── Common ──────────────────────────────────────────────
+    ErrorResponse:
+      type: object
+      required: [error]
+      properties:
+        error:
+          type: object
+          required: [code, message]
+          properties:
+            code:
+              type: string
+              example: ACTIVE_SPRINT_EXISTS
+            message:
+              type: string
+              example: An active sprint already exists. Please complete it before creating a new one.
+
+    ValidationErrorResponse:
+      type: object
+      required: [error]
+      properties:
+        error:
+          type: object
+          required: [code, message, fields]
+          properties:
+            code:
+              type: string
+              example: VALIDATION_ERROR
+            message:
+              type: string
+              example: Request validation failed
+            fields:
+              type: array
+              items:
+                type: object
+                required: [field, message]
+                properties:
+                  field:
+                    type: string
+                    example: endDate
+                  message:
+                    type: string
+                    example: End date must be after start date
+
+    # ── Sprint ──────────────────────────────────────────────
+    SprintStatus:
+      type: string
+      enum: [active, completed]
+
+    Sprint:
+      type: object
+      required: [id, name, startDate, endDate, goal, status, createdAt, updatedAt]
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+          example: Sprint 1
+        startDate:
+          type: string
+          format: date
+        endDate:
+          type: string
+          format: date
+        goal:
+          type: string
+          example: Complete user authentication module
+        status:
+          $ref: "#/components/schemas/SprintStatus"
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+
+    SprintDetail:
+      allOf:
+        - $ref: "#/components/schemas/Sprint"
+        - type: object
+          required: [taskStats]
+          properties:
+            taskStats:
+              type: object
+              required: [todo, inProgress, done, total]
+              properties:
+                todo:
+                  type: integer
+                inProgress:
+                  type: integer
+                done:
+                  type: integer
+                total:
+                  type: integer
+
+    SprintCreateRequest:
+      type: object
+      required: [name, startDate, endDate]
+      properties:
+        name:
+          type: string
+          minLength: 1
+          maxLength: 100
+        startDate:
+          type: string
+          format: date
+        endDate:
+          type: string
+          format: date
+        goal:
+          type: string
+          maxLength: 500
+          default: ""
+
+    SprintUpdateRequest:
+      type: object
+      properties:
+        name:
+          type: string
+          minLength: 1
+          maxLength: 100
+        startDate:
+          type: string
+          format: date
+        endDate:
+          type: string
+          format: date
+        goal:
+          type: string
+          maxLength: 500
+
+    # ── Ceremony ────────────────────────────────────────────
+    CeremonyFrequency:
+      type: string
+      enum: [daily, once]
+
+    CeremonyStatus:
+      type: string
+      enum: [upcoming, imminent, in_progress, completed, overdue_unrecorded]
+      description: >
+        upcoming = future, imminent = within 30 min, in_progress = happening now,
+        completed = record submitted, overdue_unrecorded = past without record
+
+    Ceremony:
+      type: object
+      required: [id, sprintId, name, type, frequency, scheduledAt, status, createdAt, updatedAt]
+      properties:
+        id:
+          type: string
+        sprintId:
+          type: string
+        name:
+          type: string
+          example: Daily Standup
+        type:
+          type: string
+          description: Ceremony type key (standup, planning, review, retro, or custom)
+          example: standup
+        frequency:
+          $ref: "#/components/schemas/CeremonyFrequency"
+        scheduledAt:
+          type: string
+          format: date-time
+          description: Scheduled date-time (for daily, this is the time-of-day template)
+        scheduledTime:
+          type: string
+          pattern: "^\\d{2}:\\d{2}$"
+          description: Time of day for daily ceremonies (HH:mm)
+          example: "09:00"
+        hasRecord:
+          type: boolean
+          description: Whether this ceremony has an associated record
+        status:
+          $ref: "#/components/schemas/CeremonyStatus"
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+
+    CeremonyCreateRequest:
+      type: object
+      required: [name, type, frequency]
+      properties:
+        name:
+          type: string
+          minLength: 1
+          maxLength: 100
+        type:
+          type: string
+          minLength: 1
+          maxLength: 50
+        frequency:
+          $ref: "#/components/schemas/CeremonyFrequency"
+        scheduledAt:
+          type: string
+          format: date-time
+          description: Required for once frequency
+        scheduledTime:
+          type: string
+          pattern: "^\\d{2}:\\d{2}$"
+          description: Required for daily frequency (HH:mm)
+
+    CeremonyUpdateRequest:
+      type: object
+      properties:
+        name:
+          type: string
+          minLength: 1
+          maxLength: 100
+        frequency:
+          $ref: "#/components/schemas/CeremonyFrequency"
+        scheduledAt:
+          type: string
+          format: date-time
+        scheduledTime:
+          type: string
+          pattern: "^\\d{2}:\\d{2}$"
+
+    UpcomingCeremony:
+      allOf:
+        - $ref: "#/components/schemas/Ceremony"
+        - type: object
+          required: [countdownMinutes]
+          properties:
+            countdownMinutes:
+              type: integer
+              description: Minutes until the ceremony starts (negative if past)
+
+    # ── Standup ─────────────────────────────────────────────
+    StandupEntry:
+      type: object
+      required: [id, memberId, memberName, yesterday, today, blockers, createdAt, updatedAt]
+      properties:
+        id:
+          type: string
+        memberId:
+          type: string
+        memberName:
+          type: string
+          description: Snapshot of member name at time of entry
+        memberColor:
+          type: string
+          description: Snapshot of member avatar color
+        yesterday:
+          type: string
+          description: What was done yesterday
+        today:
+          type: string
+          description: What is planned for today
+        blockers:
+          type: string
+          description: Any blockers (empty string if none)
+        hasBlockers:
+          type: boolean
+          description: Convenience flag for highlighting
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+
+    StandupDay:
+      type: object
+      required: [date, entries, submittedCount, totalMembers]
+      properties:
+        date:
+          type: string
+          format: date
+        entries:
+          type: array
+          items:
+            $ref: "#/components/schemas/StandupEntry"
+        submittedMembers:
+          type: array
+          items:
+            type: string
+          description: Member IDs who have submitted
+        unsubmittedMembers:
+          type: array
+          items:
+            $ref: "#/components/schemas/Member"
+          description: Members who have not yet submitted
+        submittedCount:
+          type: integer
+        totalMembers:
+          type: integer
+
+    StandupUpsertRequest:
+      type: object
+      required: [entries]
+      properties:
+        entries:
+          type: array
+          minItems: 1
+          items:
+            type: object
+            required: [memberId, yesterday, today, blockers]
+            properties:
+              memberId:
+                type: string
+              yesterday:
+                type: string
+                maxLength: 2000
+              today:
+                type: string
+                maxLength: 2000
+              blockers:
+                type: string
+                maxLength: 2000
+
+    # ── Review ──────────────────────────────────────────────
+    ReviewRecord:
+      type: object
+      required: [id, sprintId, conclusion, feedbackItems, decisionItems, createdAt, updatedAt]
+      properties:
+        id:
+          type: string
+        sprintId:
+          type: string
+        conclusion:
+          type: string
+          description: Review conclusion (supports markdown)
+        feedbackItems:
+          type: array
+          items:
+            $ref: "#/components/schemas/FeedbackItem"
+        decisionItems:
+          type: array
+          items:
+            $ref: "#/components/schemas/DecisionItem"
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+
+    FeedbackItem:
+      type: object
+      required: [id, title, content]
+      properties:
+        id:
+          type: string
+        title:
+          type: string
+        content:
+          type: string
+
+    DecisionItem:
+      type: object
+      required: [id, content, status]
+      properties:
+        id:
+          type: string
+        content:
+          type: string
+        status:
+          type: string
+          enum: [pending, approved, rejected]
+
+    ReviewRecordRequest:
+      type: object
+      required: [conclusion]
+      properties:
+        conclusion:
+          type: string
+          maxLength: 10000
+        feedbackItems:
+          type: array
+          items:
+            type: object
+            required: [title, content]
+            properties:
+              id:
+                type: string
+                description: Include for updates, omit for new items
+              title:
+                type: string
+                maxLength: 200
+              content:
+                type: string
+                maxLength: 5000
+        decisionItems:
+          type: array
+          items:
+            type: object
+            required: [content, status]
+            properties:
+              id:
+                type: string
+              content:
+                type: string
+                maxLength: 2000
+              status:
+                type: string
+                enum: [pending, approved, rejected]
+
+    # ── Retro ───────────────────────────────────────────────
+    RetroRecord:
+      type: object
+      required: [id, sprintId, wentWell, toImprove, actionItems, createdAt, updatedAt]
+      properties:
+        id:
+          type: string
+        sprintId:
+          type: string
+        wentWell:
+          type: array
+          items:
+            $ref: "#/components/schemas/RetroItem"
+        toImprove:
+          type: array
+          items:
+            $ref: "#/components/schemas/RetroItem"
+        actionItems:
+          type: array
+          items:
+            $ref: "#/components/schemas/ActionItem"
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+
+    RetroItem:
+      type: object
+      required: [id, content]
+      properties:
+        id:
+          type: string
+        content:
+          type: string
+
+    ActionItem:
+      type: object
+      required: [id, title, description, assigneeId, convertedToTask]
+      properties:
+        id:
+          type: string
+        title:
+          type: string
+        description:
+          type: string
+        assigneeId:
+          type: string
+          nullable: true
+        assigneeName:
+          type: string
+          nullable: true
+        convertedToTask:
+          type: boolean
+          description: Whether this action item has been converted to a task
+        taskId:
+          type: string
+          nullable: true
+          description: ID of the generated task, if converted
+
+    RetroRecordRequest:
+      type: object
+      properties:
+        wentWell:
+          type: array
+          items:
+            type: object
+            required: [content]
+            properties:
+              id:
+                type: string
+              content:
+                type: string
+                maxLength: 2000
+        toImprove:
+          type: array
+          items:
+            type: object
+            required: [content]
+            properties:
+              id:
+                type: string
+              content:
+                type: string
+                maxLength: 2000
+        actionItems:
+          type: array
+          items:
+            type: object
+            required: [title]
+            properties:
+              id:
+                type: string
+              title:
+                type: string
+                maxLength: 200
+              description:
+                type: string
+                maxLength: 2000
+                default: ""
+              assigneeId:
+                type: string
+                nullable: true
+              convertToTask:
+                type: boolean
+                default: true
+                description: Whether to auto-create a task from this action item
+
+    # ── Task ────────────────────────────────────────────────
+    TaskStatus:
+      type: string
+      enum: [todo, in_progress, done]
+
+    Task:
+      type: object
+      required: [id, sprintId, title, description, status, sortOrder, createdAt, updatedAt]
+      properties:
+        id:
+          type: string
+        sprintId:
+          type: string
+        title:
+          type: string
+        description:
+          type: string
+        status:
+          $ref: "#/components/schemas/TaskStatus"
+        assigneeId:
+          type: string
+          nullable: true
+        assigneeName:
+          type: string
+          nullable: true
+          description: Snapshot of assignee name
+        assigneeColor:
+          type: string
+          nullable: true
+          description: Snapshot of assignee avatar color
+        sortOrder:
+          type: integer
+          description: Position within the column
+        sourceType:
+          type: string
+          enum: [manual, retro_action]
+          nullable: true
+          description: How this task was created
+        sourceId:
+          type: string
+          nullable: true
+          description: ID of the source (e.g., retro action item ID)
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+
+    TaskBoardResponse:
+      type: object
+      required: [todo, inProgress, done]
+      properties:
+        todo:
+          type: array
+          items:
+            $ref: "#/components/schemas/Task"
+        inProgress:
+          type: array
+          items:
+            $ref: "#/components/schemas/Task"
+        done:
+          type: array
+          items:
+            $ref: "#/components/schemas/Task"
+
+    TaskCreateRequest:
+      type: object
+      required: [title]
+      properties:
+        title:
+          type: string
+          minLength: 1
+          maxLength: 200
+        description:
+          type: string
+          maxLength: 5000
+          default: ""
+        assigneeId:
+          type: string
+          nullable: true
+
+    TaskUpdateRequest:
+      type: object
+      properties:
+        title:
+          type: string
+          minLength: 1
+          maxLength: 200
+        description:
+          type: string
+          maxLength: 5000
+        assigneeId:
+          type: string
+          nullable: true
+
+    # ── Member ──────────────────────────────────────────────
+    Member:
+      type: object
+      required: [id, name, color, createdAt]
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        color:
+          type: string
+          description: Avatar color label (hex or named color)
+          example: "#4F46E5"
+        createdAt:
+          type: string
+          format: date-time
+
+    MemberCreateRequest:
+      type: object
+      required: [name, color]
+      properties:
+        name:
+          type: string
+          minLength: 1
+          maxLength: 50
+        color:
+          type: string
+          description: Avatar color
+          example: "#4F46E5"
+
+    MemberUpdateRequest:
+      type: object
+      properties:
+        name:
+          type: string
+          minLength: 1
+          maxLength: 50
+        color:
+          type: string
+
+    # ── Dashboard ───────────────────────────────────────────
+    DashboardResponse:
+      type: object
+      required: [activeSprint, todayCeremonies, upcomingCeremonies, unfinishedTasks, recentRecords]
+      properties:
+        activeSprint:
+          nullable: true
+          allOf:
+            - $ref: "#/components/schemas/SprintDetail"
+          description: Current active sprint with task stats, null if none
+        todayCeremonies:
+          type: array
+          items:
+            $ref: "#/components/schemas/UpcomingCeremony"
+          description: Ceremonies scheduled for today
+        upcomingCeremonies:
+          type: array
+          items:
+            $ref: "#/components/schemas/UpcomingCeremony"
+          description: Next upcoming ceremonies (within 7 days)
+        unfinishedTasks:
+          type: array
+          items:
+            $ref: "#/components/schemas/Task"
+          description: Tasks not in Done status for active sprint
+        recentRecords:
+          type: array
+          maxItems: 3
+          items:
+            type: object
+            required: [type, ceremonyName, date, summary]
+            properties:
+              type:
+                type: string
+                enum: [standup, review, retro]
+              ceremonyName:
+                type: string
+              date:
+                type: string
+                format: date
+              summary:
+                type: string
+                description: Brief text summary of the record
