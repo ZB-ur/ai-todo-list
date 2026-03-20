@@ -1,47 +1,77 @@
 ## Market Overview
 
-待办事项（Todo）应用是生产力工具市场中最成熟、竞争最激烈的细分领域之一。全球任务管理软件市场规模预计在 2026 年达到 ~45 亿美元，年复合增长率约 13%。尽管市场饱和，用户对轻量、跨平台、易上手的 Todo 工具仍有持续需求——尤其在以下场景：
+敏捷迭代管理工具市场成熟但高度分化。头部工具（Jira、Monday.com、ClickUp）功能全面但对 3-10 人小团队来说过于复杂；轻量工具（Trello、Kanbanchi）虽简洁但缺乏迭代仪式（站会、回顾、评审）的结构化管理能力。市场存在明显的"中间地带"空白：**既能提供结构化的 Sprint 仪式管理，又足够轻量让小团队打开即用**。
 
-- **个人日常管理**：购物清单、习惯打卡、每日计划
-- **小团队协作**：共享清单、简单看板、任务分配
-- **学生/自由职业者**：课程作业跟踪、项目里程碑
-
-核心机会在于：大多数用户只使用 Todo 应用 20% 的功能，但主流产品功能越做越重。一款聚焦「极简 + 快速录入」的产品仍有差异化空间。
+关键机会点：
+- 现有工具普遍将"仪式管理"作为附属功能，没有专门的仪式执行与记录流程
+- 小团队常因工具过重而放弃使用，导致敏捷流程流于形式
+- 站会记录、回顾行动项跟踪等需求被分散在多个工具中（如 Parabol 做回顾、Trello 做看板、Slack 做站会）
+- 移动端友好的敏捷工具稀缺，而站会场景高度依赖手机
 
 ## Competitor Analysis
 
 | Competitor | Core Features | Strengths | Weaknesses |
 |---|---|---|---|
-| **Todoist** | 自然语言输入、标签/过滤器、项目分组、Karma 积分 | 跨平台体验优秀；免费版功能够用；API 生态丰富 | 高级功能需订阅；协作功能偏弱 |
-| **Microsoft To Do** | My Day 每日规划、与 Outlook 集成、共享列表 | 完全免费；深度整合微软生态 | UI 更新缓慢；离开微软生态价值骤降 |
-| **TickTick（滴答清单）** | 番茄钟内置、日历视图、习惯追踪、看板 | 功能全面；中国市场本地化好 | 免费版限制多；功能堆叠导致学习成本高 |
-| **Apple Reminders** | Siri 集成、智能列表、位置/时间提醒 | 系统级集成零摩擦；完全免费 | 仅限 Apple 生态；协作能力弱 |
-| **Google Tasks** | Gmail/Calendar 深度集成、极简界面 | 零成本；与 Google 工作流无缝衔接 | 功能极度精简；无标签/优先级 |
-| **Any.do** | 每日规划向导、日历整合、杂货清单模板 | 上手快；UI 精美 | 免费版功能受限；用户量下滑 |
+| **Jira** (Atlassian) | Sprint 管理、看板、Backlog、燃尽图、自定义工作流 | 功能最全面；免费支持 10 人；生态成熟 | 学习曲线陡峭；配置繁重；无内置仪式管理；小团队常感"杀鸡用牛刀" |
+| **Trello** (Atlassian) | 看板、卡片、Power-Up 插件、自动化 | 极致简洁；拖拽直觉操作；免费版可用 | 无 Sprint 概念；无仪式管理；需靠插件拼凑敏捷流程 |
+| **Linear** | Issue 追踪、Cycle（迭代）、Roadmap、自动化 | 速度极快；UI 精美；开发者友好 | 偏向工程团队；无仪式执行功能；需付费 |
+| **Plane** (开源) | Sprint Cycle、看板、Backlog、燃尽图 | 开源可自托管；Jira 80% 功能平替；社区活跃 | 部署需 Docker；无仪式管理；仍在快速迭代中 |
+| **Parabol** | 回顾会、站会、Sprint Planning、Check-in | 专注敏捷会议；免费开源；集成 Jira/GitHub | 只做仪式不做任务管理；需搭配其他工具；无看板 |
+| **Zoho Sprints** | Sprint 规划、看板、时间表、速度图 | 轻量且功能完整；价格亲民 | 仪式管理弱；UI 较传统；生态锁定 Zoho |
+| **Taiga** (开源) | Scrum/Kanban、Sprint、Epic、Backlog | 开源免费；原生 Scrum 支持；跨职能团队适配 | 无仪式执行记录；UI 略老旧；社区较小 |
+| **EasyRetro** | 回顾会模板、行动项追踪、投票、导出 | 回顾会专精；上手快；免费可用 | 只做回顾；无迭代/任务管理；需搭配其他工具 |
 
 ## Feasibility
 
 ### 技术可行性：**高**
 
-| 维度 | 评估 |
-|---|---|
-| 前端 | React + Tailwind CSS 可快速搭建；PWA 或 React Native 实现跨平台 |
-| 后端 | RESTful API + PostgreSQL/SQLite；CRUD 模型成熟，无技术风险 |
-| 实时同步 | WebSocket 或 Supabase Realtime 可解决多端同步 |
-| 离线支持 | IndexedDB + Service Worker；成熟方案，复杂度可控 |
-| 认证 | OAuth 2.0 / Magic Link，标准实现 |
+**前端**：
+- React + Tailwind CSS 完全能支持看板拖拽、仪式表单、仪表盘等 UI 需求
+- 看板拖拽可用 `@dnd-kit/core` 或 `react-beautiful-dnd`
+- 移动端响应式用 Tailwind 原生支持即可，无需额外框架
+- 日历/时间选择组件生态成熟
 
-### 商业可行性：**中**
+**后端**：
+- SQLite 适合单团队模式，零配置部署
+- Node.js + Express/Fastify 即可满足 REST API 需求
+- 数据模型清晰：Sprint → Ceremony → Record → ActionItem，加上独立的 Task 看板
 
-- 变现路径清晰（Freemium + Pro 订阅），但付费转化率普遍低（行业平均 2-5%）
-- 获客成本高——需要差异化卖点突围
-- 用户迁移成本低，留存是核心挑战
+**关键技术决策**：
+- 数据库：SQLite（轻量、嵌入式、无需独立数据库服务）
+- 拖拽库：`@dnd-kit/core`（现代、可访问性好、体积小）
+- 日期管理：`date-fns`（轻量，避免 moment.js 的体积）
+
+**潜在技术挑战**：
+- 看板拖拽在移动端的触控体验需要额外优化
+- 仪式提醒在无后端推送的情况下只能做页面内轮询
+- SQLite 并发写入限制（单团队场景下不成问题）
+
+### 商业可行性：**中高**
+
+- 差异化定位清晰：**仪式驱动的轻量敏捷管理**，区别于任务驱动的传统工具
+- 目标用户痛点真实：小团队普遍反映仪式管理是痛点
+- MVP 范围合理，2-3 周可交付
+- 风险在于用户获取——需要说服团队从现有工具迁移
 
 ## Key Insights
 
-1. **极简是差异化武器**：市场头部产品功能日趋复杂，一款专注「3 秒录入、零配置」的 Todo 应用能切中被忽视的轻量用户群。
-2. **快捷录入体验是关键**：自然语言解析（如「明天下午3点买牛奶」自动设日期）、键盘快捷键、全局快速添加是高价值功能。
-3. **跨平台同步是底线**：用户期望 Web + Mobile 至少双端可用，离线可写、在线同步。
-4. **社交/协作是增长杠杆**：共享清单（家庭购物、团队任务）能带来自然传播。
-5. **数据导入降低迁移门槛**：支持从 Todoist/TickTick CSV 导入，可吸引竞品不满用户。
-6. **AI 辅助是趋势方向**：智能分类、自动优先级建议、重复任务预测等 AI 功能正在成为新一代 Todo 应用的标配。
+1. **差异化核心在"仪式管理"**：市场上没有一个工具同时做好"迭代看板 + 仪式执行记录"。Parabol 只做仪式不做任务，Jira/Trello 只做任务不管仪式。将两者合一是最大的产品机会。
+
+2. **"打开即用"是杀手级体验**：小团队最大的阻碍是工具的初始配置成本。无需注册、无需配置、打开浏览器就能创建 Sprint 和记录站会——这将是对标 Jira/Linear 的核心优势。
+
+3. **站会三问是高频入口**：每日站会是团队使用频率最高的仪式（每天一次），应作为产品的核心入口和最优体验路径。移动端站会记录必须做到极致简单。
+
+4. **回顾行动项跟踪是隐藏刚需**：多个竞品（EasyRetro、Parabol）验证了回顾会产出的行动项如果不跟踪就会被遗忘。将行动项自动关联到下一个 Sprint 是重要的差异化功能。
+
+5. **不做燃尽图是正确的 MVP 决策**：燃尽图需要精确的故事点估算体系，对小团队来说是额外负担。MVP 用简单的"完成/总数"进度条即可。
+
+6. **单团队模式降低技术复杂度 80%**：不需要用户认证、权限管理、多租户隔离，极大简化了后端架构和数据模型，使 SQLite 方案完全可行。
+
+Sources:
+- [15 Best Agile Project Management Software Tools in 2026](https://www.kanbanchi.com/blog/best-agile-project-management-software)
+- [Top 10 Agile Project Management Tools 2026](https://productive.io/blog/agile-project-management-software/)
+- [Plane - Open Source Jira Alternative](https://github.com/makeplane/plane)
+- [Parabol - Free Agile Meeting Tool](https://www.parabol.co/)
+- [11 Jira alternatives you can self-host in 2026](https://plane.so/blog/11-jira-alternatives-you-can-self-host-in-2026)
+- [Best Sprint Planning Tools 2026](https://www.goodday.work/blog/best-sprint-planning-tools/)
+- [List of Top 12 Best Agile Retrospective Tools in 2026](https://agilemania.com/best-agile-retrospective-tools)
