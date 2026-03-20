@@ -1,0 +1,278 @@
+{
+  "endpoints": [
+    {
+      "method": "GET",
+      "path": "/dashboard",
+      "covers_features": [
+        "F-007",
+        "F-008"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/sprints",
+      "covers_features": [
+        "F-001"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/sprints",
+      "covers_features": [
+        "F-001"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/sprints/active",
+      "covers_features": [
+        "F-001",
+        "F-007"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/sprints/name-check",
+      "covers_features": [
+        "F-001"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/sprints/{sprintId}",
+      "covers_features": [
+        "F-001"
+      ]
+    },
+    {
+      "method": "PUT",
+      "path": "/sprints/{sprintId}",
+      "covers_features": [
+        "F-001"
+      ]
+    },
+    {
+      "method": "DELETE",
+      "path": "/sprints/{sprintId}",
+      "covers_features": [
+        "F-001"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/sprints/{sprintId}/complete",
+      "covers_features": [
+        "F-001"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/sprints/{sprintId}/delete-impact",
+      "covers_features": [
+        "F-001"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/sprints/{sprintId}/ceremonies",
+      "covers_features": [
+        "F-002"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/sprints/{sprintId}/ceremonies",
+      "covers_features": [
+        "F-002"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/sprints/{sprintId}/ceremonies/defaults",
+      "covers_features": [
+        "F-002"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/ceremonies/{ceremonyId}",
+      "covers_features": [
+        "F-002"
+      ]
+    },
+    {
+      "method": "PUT",
+      "path": "/ceremonies/{ceremonyId}",
+      "covers_features": [
+        "F-002"
+      ]
+    },
+    {
+      "method": "DELETE",
+      "path": "/ceremonies/{ceremonyId}",
+      "covers_features": [
+        "F-002"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/ceremonies/upcoming",
+      "covers_features": [
+        "F-008"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/sprints/{sprintId}/standups",
+      "covers_features": [
+        "F-003"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/sprints/{sprintId}/standups/{date}",
+      "covers_features": [
+        "F-003"
+      ]
+    },
+    {
+      "method": "PUT",
+      "path": "/sprints/{sprintId}/standups/{date}",
+      "covers_features": [
+        "F-003",
+        "F-009"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/sprints/{sprintId}/review",
+      "covers_features": [
+        "F-004"
+      ]
+    },
+    {
+      "method": "PUT",
+      "path": "/sprints/{sprintId}/review",
+      "covers_features": [
+        "F-004"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/sprints/{sprintId}/retro",
+      "covers_features": [
+        "F-005"
+      ]
+    },
+    {
+      "method": "PUT",
+      "path": "/sprints/{sprintId}/retro",
+      "covers_features": [
+        "F-005",
+        "F-006"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/sprints/{sprintId}/tasks",
+      "covers_features": [
+        "F-006"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/sprints/{sprintId}/tasks",
+      "covers_features": [
+        "F-006"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/tasks/{taskId}",
+      "covers_features": [
+        "F-006"
+      ]
+    },
+    {
+      "method": "PUT",
+      "path": "/tasks/{taskId}",
+      "covers_features": [
+        "F-006"
+      ]
+    },
+    {
+      "method": "DELETE",
+      "path": "/tasks/{taskId}",
+      "covers_features": [
+        "F-006"
+      ]
+    },
+    {
+      "method": "PATCH",
+      "path": "/tasks/{taskId}/status",
+      "covers_features": [
+        "F-006"
+      ]
+    },
+    {
+      "method": "PATCH",
+      "path": "/tasks/reorder",
+      "covers_features": [
+        "F-006"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/members",
+      "covers_features": [
+        "F-009"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/members",
+      "covers_features": [
+        "F-009"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/members/{memberId}",
+      "covers_features": [
+        "F-009"
+      ]
+    },
+    {
+      "method": "PUT",
+      "path": "/members/{memberId}",
+      "covers_features": [
+        "F-009"
+      ]
+    },
+    {
+      "method": "DELETE",
+      "path": "/members/{memberId}",
+      "covers_features": [
+        "F-009"
+      ]
+    }
+  ],
+  "models": [
+    "Sprint",
+    "SprintDetail",
+    "Ceremony",
+    "UpcomingCeremony",
+    "StandupEntry",
+    "StandupDay",
+    "ReviewRecord",
+    "FeedbackItem",
+    "DecisionItem",
+    "RetroRecord",
+    "RetroItem",
+    "ActionItem",
+    "Task",
+    "TaskBoardResponse",
+    "Member",
+    "DashboardResponse"
+  ]
+}
