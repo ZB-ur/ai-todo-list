@@ -1,0 +1,64 @@
+{
+  "features": [
+    {
+      "id": "F-001",
+      "name": "sprint-crud"
+    },
+    {
+      "id": "F-002",
+      "name": "ceremony-config"
+    },
+    {
+      "id": "F-003",
+      "name": "standup-record"
+    },
+    {
+      "id": "F-004",
+      "name": "review-record"
+    },
+    {
+      "id": "F-005",
+      "name": "retro-record"
+    },
+    {
+      "id": "F-006",
+      "name": "task-board"
+    },
+    {
+      "id": "F-007",
+      "name": "sprint-dashboard"
+    },
+    {
+      "id": "F-008",
+      "name": "ceremony-reminder"
+    },
+    {
+      "id": "F-009",
+      "name": "member-list"
+    },
+    {
+      "id": "F-010",
+      "name": "data-persistence"
+    }
+  ],
+  "constraints": [
+    "单团队模式，无需用户认证和权限管理，打开浏览器即可使用",
+    "Web 应用，前后端分离架构，前端 React + Tailwind CSS，后端 Node.js + SQLite",
+    "界面必须移动端友好（响应式设计），站会记录页面优先优化移动端输入体验",
+    "同一时间只允许存在一个活跃（进行中）的 Sprint",
+    "成员管理仅为标签系统，不涉及账户和登录",
+    "MVP 阶段实时性通过页面刷新或轮询实现，不要求 WebSocket",
+    "部署为单进程 Node.js 应用 + SQLite 文件，可 Docker 一键部署"
+  ],
+  "out_of_scope": [
+    "用户认证与权限管理（RBAC）",
+    "多团队 / 多项目支持",
+    "外部通知集成（Slack、邮件、Webhook）",
+    "燃尽图、速度图等高级报表",
+    "与外部工具集成（Jira、GitHub、GitLab）",
+    "WebSocket 实时协作",
+    "国际化 / 多语言支持",
+    "离线模式 / PWA",
+    "导入导出数据"
+  ]
+}
